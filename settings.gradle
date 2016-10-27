@@ -1,1 +1,8 @@
 rootProject.name = 'wave-server'
+
+include ':core/java'
+
+rootProject.children.forEach {
+    it.name = it.name.replace("/", "-")
+    it.name = rootProject.name + "-" + it.name
+}
