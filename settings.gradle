@@ -1,6 +1,7 @@
 rootProject.name = 'wave-server'
 
 include ':core/java'
+include ':provider/netty'
 
 rootProject.children.forEach {
     it.name = it.name.replace("/", "-")

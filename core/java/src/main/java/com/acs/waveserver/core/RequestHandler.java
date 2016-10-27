@@ -1,7 +1,5 @@
 package com.acs.waveserver.core;
 
-import com.sun.deploy.net.HttpRequest;
-
 import java.io.IOException;
 import java.util.Optional;
 

@@ -9,6 +9,11 @@ subprojects{
         mavenCentral()
     }
 
+    task bundle(type: Copy, dependsOn: 'assemble') {
+        into "build/lib/libs"
+        from configurations.runtime
+    }
+
 }
 
 task wrapper(type: Wrapper) {
