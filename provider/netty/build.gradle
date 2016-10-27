@@ -1,5 +1,8 @@
 dependencies {
+    compile project(":wave-server-core-java")
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
+    compile group: 'io.netty', name: 'netty-all', version: '4.1.6.Final'
+
 
     testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.7'
     testCompile group: 'org.powermock', name: 'powermock-module-junit4', version: '1.6.5'
