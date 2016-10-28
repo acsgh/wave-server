@@ -1,21 +1,25 @@
 package com.acs.waveserver.core;
 
 
-import java.io.IOException;
+import com.acs.waveserver.core.constants.ResponseCode;
+import com.acs.waveserver.core.functional.ErrorCodeHandler;
+import com.acs.waveserver.core.functional.ExceptionHandler;
+import com.acs.waveserver.core.functional.RequestFilter;
+import com.acs.waveserver.core.functional.RequestHandler;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 
 public class Router {
 
     private final List<RequestFilter> filters;
     private final List<RequestHandler> handlers;
-    private final Map<ResponseCodes, ErrorCodeHandler> errorCodeHandlers;
+    private final Map<ResponseCode, ErrorCodeHandler> errorCodeHandlers;
     private final ExceptionHandler exceptionHandler;
 
-    public Router(List<RequestFilter> filters, List<RequestHandler> handlers, Map<ResponseCodes, ErrorCodeHandler> errorCodeHandlers, ExceptionHandler exceptionHandler) {
+    Router(List<RequestFilter> filters, List<RequestHandler> handlers, Map<ResponseCode, ErrorCodeHandler> errorCodeHandlers, ExceptionHandler exceptionHandler) {
         checkNotNull("filters", filters);
         checkNotNull("handlers", filters);
         checkNotNull("errorCodeHandlers", filters);
@@ -27,26 +31,18 @@ public class Router {
         this.exceptionHandler = exceptionHandler;
     }
 
-    public void start() {
-
-    }
-
-    public void stop() {
-
-    }
-
-    public HTTPResponse process(HTTPRequest httpRequest) throws IOException {
+    public HTTPResponse process(HTTPRequest httpRequest)  {
         HTTPResponseBuilder responseBuilder = new HTTPResponseBuilder();
         try {
             return processFilters(httpRequest, responseBuilder)
                     .orElse(processHandler(httpRequest, responseBuilder)
-                            .orElse(getErrorResponse(httpRequest, responseBuilder, ResponseCodes.NOT_FOUND)));
+                            .orElse(getErrorResponse(httpRequest, responseBuilder, ResponseCode.NOT_FOUND)));
         } catch (Exception e) {
             return exceptionHandler.handle(httpRequest, responseBuilder, e);
         }
     }
 
-    private HTTPResponse getErrorResponse(HTTPRequest httpRequest, HTTPResponseBuilder responseBuilder, ResponseCodes notFound) {
+    private HTTPResponse getErrorResponse(HTTPRequest httpRequest, HTTPResponseBuilder responseBuilder, ResponseCode notFound) {
         return null;
     }
 

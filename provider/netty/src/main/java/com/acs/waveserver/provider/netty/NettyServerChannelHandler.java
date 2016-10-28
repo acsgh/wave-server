@@ -1,5 +1,7 @@
 package com.acs.waveserver.provider.netty;
 
+import com.acs.waveserver.core.HTTPRequest;
+import com.acs.waveserver.core.HTTPResponse;
 import com.acs.waveserver.core.Router;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -39,10 +41,9 @@ class NettyServerChannelHandler extends ChannelInboundHandlerAdapter {
             }
             boolean keepAlive = HttpUtil.isKeepAlive(req);
 
-
-            FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(CONTENT));
-            response.headers().set(CONTENT_TYPE, "text/plain");
-            response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
+            HTTPRequest waveRequest = getWaveRequest(req);
+            HTTPResponse wareResponse = router.process(waveRequest);
+            HttpResponse response = getNettyResponse(wareResponse);
 
             if (!keepAlive) {
                 ctx.write(response).addListener(ChannelFutureListener.CLOSE);
@@ -51,6 +52,17 @@ class NettyServerChannelHandler extends ChannelInboundHandlerAdapter {
                 ctx.write(response);
             }
         }
+    }
+
+    private HttpResponse getNettyResponse(HTTPResponse wareResponse) {
+        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(CONTENT));
+        response.headers().set(CONTENT_TYPE, "text/plain");
+        response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
+        return response;
+    }
+
+    private HTTPRequest getWaveRequest(HttpRequest req) {
+        return new HTTPRequest();
     }
 
     @Override

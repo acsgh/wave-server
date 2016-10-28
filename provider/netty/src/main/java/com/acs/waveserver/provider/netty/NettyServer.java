@@ -1,6 +1,7 @@
 package com.acs.waveserver.provider.netty;
 
 import com.acs.waveserver.core.Router;
+import com.acs.waveserver.core.RouterBuilder;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
@@ -23,7 +24,8 @@ public final class NettyServer {
     }
 
     private static Router getRouter() {
-        return null;
+        RouterBuilder builder = new RouterBuilder();
+        return builder.build();
     }
 
     private final Logger log = LoggerFactory.getLogger(getClass());
