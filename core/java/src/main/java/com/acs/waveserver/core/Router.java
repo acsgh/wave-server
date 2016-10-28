@@ -32,7 +32,7 @@ public class Router {
     }
 
     public HTTPResponse process(HTTPRequest httpRequest)  {
-        HTTPResponseBuilder responseBuilder = new HTTPResponseBuilder();
+        HTTPResponseBuilder responseBuilder = new HTTPResponseBuilder(httpRequest);
         try {
             return processFilters(httpRequest, responseBuilder)
                     .orElse(processHandler(httpRequest, responseBuilder)

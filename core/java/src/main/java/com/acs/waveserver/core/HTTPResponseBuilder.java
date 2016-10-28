@@ -11,8 +11,8 @@ public class HTTPResponseBuilder {
     private int statusCode;
     private String statusMessage;
 
-    public HTTPResponseBuilder() {
-        version(HTTPVersion.HTTP_1_1);
+    public HTTPResponseBuilder(HTTPRequest request) {
+        version(request.httpVersion);
         status(OK);
     }
 
