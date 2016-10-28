@@ -20,7 +20,7 @@ class NettyServerChannelHandler extends ChannelInboundHandlerAdapter {
 
     private final Router router;
 
-    public NettyServerChannelHandler(Router router) {
+    NettyServerChannelHandler(Router router) {
         this.router = router;
     }
 

@@ -12,7 +12,7 @@ class NettyServerChannelInitializer extends ChannelInitializer<SocketChannel> {
     private final Router router;
     private final SslContext sslCtx;
 
-    public NettyServerChannelInitializer(Router router, SslContext sslCtx) {
+    NettyServerChannelInitializer(Router router, SslContext sslCtx) {
         this.router = router;
         this.sslCtx = sslCtx;
     }

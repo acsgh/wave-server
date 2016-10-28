@@ -10,14 +10,10 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public final class NettyServerChannel {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
+final class NettyServerChannel {
 
     private final String host;
     private final int port;
@@ -30,14 +26,14 @@ public final class NettyServerChannel {
     private EventLoopGroup workerGroup;
     private Channel channel;
 
-    public NettyServerChannel(String host, int port, SslContext sslContext, Router router) {
+    NettyServerChannel(String host, int port, SslContext sslContext, Router router) {
         this.host = host;
         this.port = port;
         this.sslContext = sslContext;
         this.router = router;
     }
 
-    public void start() throws Exception {
+    void start() throws Exception {
         if (started.compareAndSet(false, true)) {
             bossGroup = new NioEventLoopGroup(1);
             workerGroup = new NioEventLoopGroup();
@@ -52,7 +48,7 @@ public final class NettyServerChannel {
         }
     }
 
-    public void stop() throws Exception {
+    void stop() throws Exception {
         if (started.compareAndSet(false, true)) {
             channel.close().sync();
             close(bossGroup);
