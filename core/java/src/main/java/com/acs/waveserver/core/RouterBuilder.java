@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class WaveServerBuilder {
+public class RouterBuilder {
 
     private final List<RequestFilter> filters = new ArrayList<>();
     private final List<RequestHandler> handlers = new ArrayList<>();
@@ -12,8 +12,8 @@ public class WaveServerBuilder {
     private ExceptionHandler exceptionHandler = getDefaultExceptionHandler();
 
 
-    public WaveServer build() {
-        return new WaveServer(filters, handlers, errorCodeHandlers, exceptionHandler);
+    public Router build() {
+        return new Router(filters, handlers, errorCodeHandlers, exceptionHandler);
     }
 
     private ExceptionHandler getDefaultExceptionHandler() {
