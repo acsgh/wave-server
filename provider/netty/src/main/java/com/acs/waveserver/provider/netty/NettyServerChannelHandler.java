@@ -60,10 +60,10 @@ class NettyServerChannelHandler extends ChannelInboundHandlerAdapter {
         FullHttpResponse response = new DefaultFullHttpResponse(
                 getNettyHttpVersion(waveResponse.protocolVersion),
                 HttpResponseStatus.valueOf(waveResponse.responseStatus.code),
-                Unpooled.wrappedBuffer(CONTENT)
+                Unpooled.wrappedBuffer(waveResponse.getBytes())
         );
 
-        response.headers().set(CONTENT_TYPE, "text/plain");
+        response.headers().set(CONTENT_TYPE, "text/html");
         response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
         return response;
     }

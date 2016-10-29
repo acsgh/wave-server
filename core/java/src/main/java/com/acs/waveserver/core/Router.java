@@ -6,6 +6,7 @@ import com.acs.waveserver.core.functional.ErrorCodeHandler;
 import com.acs.waveserver.core.functional.ExceptionHandler;
 import com.acs.waveserver.core.functional.RequestFilter;
 import com.acs.waveserver.core.functional.RequestHandler;
+import org.omg.CORBA.portable.UnknownException;
 
 import java.util.Collections;
 import java.util.List;

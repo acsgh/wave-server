@@ -6,6 +6,7 @@ import com.acs.waveserver.core.functional.ErrorCodeHandler;
 import com.acs.waveserver.core.functional.ExceptionHandler;
 import com.acs.waveserver.core.functional.RequestFilter;
 import com.acs.waveserver.core.functional.RequestHandler;
+import com.acs.waveserver.core.utils.ExceptionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +46,7 @@ public class RouterBuilder {
     private ExceptionHandler getDefaultExceptionHandler() {
         return (request, responseBuilder, throwable) ->{
             responseBuilder.status(ResponseStatus.INTERNAL_SERVER_ERROR);
+            responseBuilder.body(ExceptionUtils.stacktraceToHtml(throwable));
             return responseBuilder.build();
         };
     }

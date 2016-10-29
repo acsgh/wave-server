@@ -9,6 +9,7 @@ public class HTTPResponseBuilder {
 
     private ProtocolVersion protocolVersion;
     private ResponseStatus responseStatus;
+    private Object body;
 
     public HTTPResponseBuilder(HTTPRequest request) {
         version(request.protocolVersion);
@@ -16,7 +17,7 @@ public class HTTPResponseBuilder {
     }
 
     public HTTPResponse build() {
-        return new HTTPResponse(protocolVersion, responseStatus);
+        return new HTTPResponse(protocolVersion, responseStatus, body);
     }
 
     public HTTPResponseBuilder version(ProtocolVersion protocolVersion) {
@@ -27,5 +28,9 @@ public class HTTPResponseBuilder {
     public HTTPResponseBuilder status(ResponseStatus responseStatus) {
         this.responseStatus = responseStatus;
         return this;
+    }
+
+    public void body(Object body) {
+        this.body = body;
     }
 }
