@@ -17,21 +17,34 @@ public class RouterBuilder {
 
     private final List<RequestFilter> filters = new ArrayList<>();
     private final List<RequestHandler> handlers = new ArrayList<>();
-    private final Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers = getDefaultErrorHandlers();
-    private ExceptionHandler exceptionHandler = getDefaultExceptionHandler();
+    private final Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers = new HashMap<>();
+    private ErrorCodeHandler defaultErrorCodeHandler;
+    private ExceptionHandler exceptionHandler;
 
+    public RouterBuilder() {
+        exceptionHandler(null);
+        defaultErrorCodeHandler(null);
+    }
 
     public Router build() {
-        return new Router(filters, handlers, errorCodeHandlers, exceptionHandler);
+        return new Router(filters, handlers, errorCodeHandlers, defaultErrorCodeHandler, exceptionHandler);
     }
 
     public RouterBuilder exceptionHandler(ExceptionHandler exceptionHandler) {
-        this.exceptionHandler = exceptionHandler;
+        if (exceptionHandler != null) {
+            this.exceptionHandler = exceptionHandler;
+        } else {
+            this.exceptionHandler = getDefaultExceptionHandler();
+        }
         return this;
     }
 
-    public RouterBuilder defaultExceptionHandler() {
-        this.exceptionHandler = getDefaultExceptionHandler();
+    public RouterBuilder defaultErrorCodeHandler(ErrorCodeHandler defaultErrorCodeHandler) {
+        if (defaultErrorCodeHandler != null) {
+            this.defaultErrorCodeHandler = defaultErrorCodeHandler;
+        } else {
+            this.defaultErrorCodeHandler = getDefaultErrorCodeHandler();
+        }
         return this;
     }
 
@@ -44,14 +57,31 @@ public class RouterBuilder {
     }
 
     private ExceptionHandler getDefaultExceptionHandler() {
-        return (request, responseBuilder, throwable) ->{
+        return (request, responseBuilder, throwable) -> {
             responseBuilder.status(ResponseStatus.INTERNAL_SERVER_ERROR);
             responseBuilder.body(ExceptionUtils.stacktraceToHtml(throwable));
             return responseBuilder.build();
         };
     }
 
-    private Map<ResponseStatus, ErrorCodeHandler> getDefaultErrorHandlers() {
-        return new HashMap<>();
+    private ErrorCodeHandler getDefaultErrorCodeHandler() {
+        return (request, responseBuilder, status) -> {
+            responseBuilder.status(status);
+            responseBuilder.body(getStatusBody(status));
+            return responseBuilder.build();
+        };
     }
+
+    private String getStatusBody(ResponseStatus status) {
+        String result = "<html>";
+        result += "<head>";
+        result += "<title>" + status + "</title>";
+        result += "</head>";
+        result += "<body>";
+        result += "<h1>" + status + "</h1>";
+        result += "</body>";
+        result += "</html>";
+        return result;
+    }
+
 }

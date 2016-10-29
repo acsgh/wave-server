@@ -6,7 +6,6 @@ import com.acs.waveserver.core.functional.ErrorCodeHandler;
 import com.acs.waveserver.core.functional.ExceptionHandler;
 import com.acs.waveserver.core.functional.RequestFilter;
 import com.acs.waveserver.core.functional.RequestHandler;
-import org.omg.CORBA.portable.UnknownException;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,24 +14,27 @@ import java.util.Optional;
 
 public class Router {
 
-    private final List<RequestFilter> filters;
-    private final List<RequestHandler> handlers;
-    private final Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers;
-    private final ExceptionHandler exceptionHandler;
+    public final List<RequestFilter> filters;
+    public final List<RequestHandler> handlers;
+    public final Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers;
+    public final ErrorCodeHandler defaultErrorCodeHandler;
+    public final ExceptionHandler exceptionHandler;
 
-    Router(List<RequestFilter> filters, List<RequestHandler> handlers, Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers, ExceptionHandler exceptionHandler) {
+    Router(List<RequestFilter> filters, List<RequestHandler> handlers, Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers, ErrorCodeHandler defaultErrorCodeHandler, ExceptionHandler exceptionHandler) {
         checkNotNull("filters", filters);
-        checkNotNull("handlers", filters);
-        checkNotNull("errorCodeHandlers", filters);
-        checkNotNull("exceptionHandler", filters);
+        checkNotNull("handlers", handlers);
+        checkNotNull("errorCodeHandlers", errorCodeHandlers);
+        checkNotNull("defaultErrorCodeHandler", defaultErrorCodeHandler);
+        checkNotNull("exceptionHandler", exceptionHandler);
 
         this.filters = Collections.unmodifiableList(filters);
         this.handlers = Collections.unmodifiableList(handlers);
         this.errorCodeHandlers = Collections.unmodifiableMap(errorCodeHandlers);
+        this.defaultErrorCodeHandler = defaultErrorCodeHandler;
         this.exceptionHandler = exceptionHandler;
     }
 
-    public HTTPResponse process(HTTPRequest httpRequest)  {
+    public HTTPResponse process(HTTPRequest httpRequest) {
         HTTPResponseBuilder responseBuilder = new HTTPResponseBuilder(httpRequest);
         try {
             return processFilters(httpRequest, responseBuilder)
@@ -43,16 +45,17 @@ public class Router {
         }
     }
 
-    private HTTPResponse getErrorResponse(HTTPRequest httpRequest, HTTPResponseBuilder responseBuilder, ResponseStatus notFound) {
-        return null;
+    private HTTPResponse getErrorResponse(HTTPRequest httpRequest, HTTPResponseBuilder responseBuilder, ResponseStatus responseStatus) {
+        ErrorCodeHandler errorCodeHandler = errorCodeHandlers.getOrDefault(responseStatus, defaultErrorCodeHandler);
+        return errorCodeHandler.handle(httpRequest, responseBuilder, responseStatus);
     }
 
     private Optional<HTTPResponse> processHandler(HTTPRequest httpRequest, HTTPResponseBuilder responseBuilder) {
-        return null;
+        return Optional.empty();
     }
 
     private Optional<HTTPResponse> processFilters(HTTPRequest httpRequest, HTTPResponseBuilder responseBuilder) {
-        return null;
+        return Optional.empty();
     }
 
     private void checkNotNull(String name, Object value) {
