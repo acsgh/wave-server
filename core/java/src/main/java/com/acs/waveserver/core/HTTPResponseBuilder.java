@@ -1,38 +1,31 @@
 package com.acs.waveserver.core;
 
-import com.acs.waveserver.core.constants.HTTPVersion;
-import com.acs.waveserver.core.constants.ResponseCode;
+import com.acs.waveserver.core.constants.ProtocolVersion;
+import com.acs.waveserver.core.constants.ResponseStatus;
 
-import static com.acs.waveserver.core.constants.ResponseCode.*;
+import static com.acs.waveserver.core.constants.ResponseStatus.*;
 
 public class HTTPResponseBuilder {
 
-    private HTTPVersion httpVersion;
-    private int statusCode;
-    private String statusMessage;
+    private ProtocolVersion protocolVersion;
+    private ResponseStatus responseStatus;
 
     public HTTPResponseBuilder(HTTPRequest request) {
-        version(request.httpVersion);
+        version(request.protocolVersion);
         status(OK);
     }
 
     public HTTPResponse build() {
-        return new HTTPResponse(httpVersion, statusCode, statusMessage);
+        return new HTTPResponse(protocolVersion, responseStatus);
     }
 
-    public HTTPResponseBuilder version(HTTPVersion httpVersion) {
-        this.httpVersion = httpVersion;
+    public HTTPResponseBuilder version(ProtocolVersion protocolVersion) {
+        this.protocolVersion = protocolVersion;
         return this;
     }
 
-    public HTTPResponseBuilder status(ResponseCode responseCode) {
-        status(responseCode.code, responseCode.message);
-        return this;
-    }
-
-    public HTTPResponseBuilder status(int code, String message) {
-        statusCode = code;
-        statusMessage = message;
+    public HTTPResponseBuilder status(ResponseStatus responseStatus) {
+        this.responseStatus = responseStatus;
         return this;
     }
 }

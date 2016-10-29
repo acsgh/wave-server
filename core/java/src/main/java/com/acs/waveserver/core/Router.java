@@ -1,7 +1,7 @@
 package com.acs.waveserver.core;
 
 
-import com.acs.waveserver.core.constants.ResponseCode;
+import com.acs.waveserver.core.constants.ResponseStatus;
 import com.acs.waveserver.core.functional.ErrorCodeHandler;
 import com.acs.waveserver.core.functional.ExceptionHandler;
 import com.acs.waveserver.core.functional.RequestFilter;
@@ -16,10 +16,10 @@ public class Router {
 
     private final List<RequestFilter> filters;
     private final List<RequestHandler> handlers;
-    private final Map<ResponseCode, ErrorCodeHandler> errorCodeHandlers;
+    private final Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers;
     private final ExceptionHandler exceptionHandler;
 
-    Router(List<RequestFilter> filters, List<RequestHandler> handlers, Map<ResponseCode, ErrorCodeHandler> errorCodeHandlers, ExceptionHandler exceptionHandler) {
+    Router(List<RequestFilter> filters, List<RequestHandler> handlers, Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers, ExceptionHandler exceptionHandler) {
         checkNotNull("filters", filters);
         checkNotNull("handlers", filters);
         checkNotNull("errorCodeHandlers", filters);
@@ -36,13 +36,13 @@ public class Router {
         try {
             return processFilters(httpRequest, responseBuilder)
                     .orElse(processHandler(httpRequest, responseBuilder)
-                            .orElse(getErrorResponse(httpRequest, responseBuilder, ResponseCode.NOT_FOUND)));
+                            .orElse(getErrorResponse(httpRequest, responseBuilder, ResponseStatus.NOT_FOUND)));
         } catch (Exception e) {
             return exceptionHandler.handle(httpRequest, responseBuilder, e);
         }
     }
 
-    private HTTPResponse getErrorResponse(HTTPRequest httpRequest, HTTPResponseBuilder responseBuilder, ResponseCode notFound) {
+    private HTTPResponse getErrorResponse(HTTPRequest httpRequest, HTTPResponseBuilder responseBuilder, ResponseStatus notFound) {
         return null;
     }
 

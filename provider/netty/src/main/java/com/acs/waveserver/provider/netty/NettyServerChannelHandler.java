@@ -3,6 +3,8 @@ package com.acs.waveserver.provider.netty;
 import com.acs.waveserver.core.HTTPRequest;
 import com.acs.waveserver.core.HTTPResponse;
 import com.acs.waveserver.core.Router;
+import com.acs.waveserver.core.constants.ProtocolVersion;
+import com.acs.waveserver.core.constants.RequestMethod;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -12,8 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.*;
-import static io.netty.handler.codec.http.HttpResponseStatus.*;
-import static io.netty.handler.codec.http.HttpVersion.*;
+import static io.netty.handler.codec.http.HttpResponseStatus.CONTINUE;
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 class NettyServerChannelHandler extends ChannelInboundHandlerAdapter {
     private static final byte[] CONTENT = {'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd'};
@@ -54,15 +56,38 @@ class NettyServerChannelHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private HttpResponse getNettyResponse(HTTPResponse wareResponse) {
-        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(CONTENT));
+    private HttpResponse getNettyResponse(HTTPResponse waveResponse) {
+        FullHttpResponse response = new DefaultFullHttpResponse(
+                getNettyHttpVersion(waveResponse.protocolVersion),
+                HttpResponseStatus.valueOf(waveResponse.responseStatus.code),
+                Unpooled.wrappedBuffer(CONTENT)
+        );
+
         response.headers().set(CONTENT_TYPE, "text/plain");
         response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
         return response;
     }
 
-    private HTTPRequest getWaveRequest(HttpRequest req) {
-        return new HTTPRequest();
+
+
+    private HTTPRequest getWaveRequest(HttpRequest request) {
+        return new HTTPRequest(
+                getWaveRequestMethod(request.method()),
+                request.uri(),
+                getWaveHTTPVersion(request.protocolVersion())
+        );
+    }
+
+    private HttpVersion getNettyHttpVersion(ProtocolVersion protocolVersion) {
+        return HttpVersion.valueOf(protocolVersion.toString());
+    }
+
+    private ProtocolVersion getWaveHTTPVersion(HttpVersion httpVersion) {
+        return ProtocolVersion.fromString(httpVersion.toString().toUpperCase());
+    }
+
+    private RequestMethod getWaveRequestMethod(HttpMethod method) {
+        return RequestMethod.fromString(method.name().toUpperCase());
     }
 
     @Override

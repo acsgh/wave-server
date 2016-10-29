@@ -1,16 +1,23 @@
 package com.acs.waveserver.core;
 
-import com.acs.waveserver.core.constants.HTTPVersion;
+import com.acs.waveserver.core.constants.ProtocolVersion;
+import com.acs.waveserver.core.constants.ResponseStatus;
 
 public class HTTPResponse {
-    public final HTTPVersion httpVersion;
-    public final int statusCode;
-    public final String statusMessage;
+    public final ProtocolVersion protocolVersion;
+    public final ResponseStatus responseStatus;
 
-    HTTPResponse(HTTPVersion httpVersion, int statusCode, String statusMessage) {
-        this.httpVersion = httpVersion;
-        this.statusCode = statusCode;
-        this.statusMessage = statusMessage;
+    HTTPResponse(ProtocolVersion protocolVersion, ResponseStatus responseStatus) {
+        this.protocolVersion = protocolVersion;
+        this.responseStatus = responseStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "HTTPResponse{" +
+                "protocolVersion=" + protocolVersion +
+                ", responseStatus=" + responseStatus +
+                '}';
     }
 }
 

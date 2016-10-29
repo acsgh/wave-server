@@ -1,7 +1,7 @@
 package com.acs.waveserver.core;
 
 import com.acs.waveserver.core.constants.RequestMethod;
-import com.acs.waveserver.core.constants.ResponseCode;
+import com.acs.waveserver.core.constants.ResponseStatus;
 import com.acs.waveserver.core.functional.ErrorCodeHandler;
 import com.acs.waveserver.core.functional.ExceptionHandler;
 import com.acs.waveserver.core.functional.RequestFilter;
@@ -16,7 +16,7 @@ public class RouterBuilder {
 
     private final List<RequestFilter> filters = new ArrayList<>();
     private final List<RequestHandler> handlers = new ArrayList<>();
-    private final Map<ResponseCode, ErrorCodeHandler> errorCodeHandlers = getDefaultErrorHandlers();
+    private final Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers = getDefaultErrorHandlers();
     private ExceptionHandler exceptionHandler = getDefaultExceptionHandler();
 
 
@@ -44,12 +44,12 @@ public class RouterBuilder {
 
     private ExceptionHandler getDefaultExceptionHandler() {
         return (request, responseBuilder, throwable) ->{
-            responseBuilder.status(ResponseCode.INTERNAL_SERVER_ERROR);
+            responseBuilder.status(ResponseStatus.INTERNAL_SERVER_ERROR);
             return responseBuilder.build();
         };
     }
 
-    private Map<ResponseCode, ErrorCodeHandler> getDefaultErrorHandlers() {
+    private Map<ResponseStatus, ErrorCodeHandler> getDefaultErrorHandlers() {
         return new HashMap<>();
     }
 }
