@@ -6,13 +6,13 @@ import com.acs.waveserver.core.constants.RequestMethod;
 public class HTTPRequest extends HTTPItem {
 
     public final RequestMethod method;
-    public final HTTPUri uri;
+    public final HTTPAddress uri;
 
     public HTTPRequest(RequestMethod method, String uri, ProtocolVersion protocolVersion, HTTPHeaders headers) {
-        this(method, HTTPUri.build(uri), protocolVersion, headers);
+        this(method, HTTPAddress.build(uri), protocolVersion, headers);
     }
 
-    public HTTPRequest(RequestMethod method, HTTPUri uri, ProtocolVersion protocolVersion, HTTPHeaders headers) {
+    public HTTPRequest(RequestMethod method, HTTPAddress uri, ProtocolVersion protocolVersion, HTTPHeaders headers) {
         super(protocolVersion, headers);
         this.method = method;
         this.uri = uri;

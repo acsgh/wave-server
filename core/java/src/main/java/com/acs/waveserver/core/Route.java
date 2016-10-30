@@ -36,7 +36,7 @@ class Route<T> {
     }
 
     public boolean canApply(HTTPRequest httpRequest) {
-        return (httpRequest.method == method) && matchUrl(httpRequest.uri.rawUri);
+        return (httpRequest.method == method) && matchUrl(httpRequest.uri.getPath());
     }
 
     private boolean matchUrl(String uri) {
