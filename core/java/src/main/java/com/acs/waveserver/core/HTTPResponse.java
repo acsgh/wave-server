@@ -4,13 +4,12 @@ import com.acs.waveserver.core.constants.ProtocolVersion;
 import com.acs.waveserver.core.constants.ResponseStatus;
 import com.acs.waveserver.core.utils.ExceptionUtils;
 
-public class HTTPResponse {
-    public final ProtocolVersion protocolVersion;
+public class HTTPResponse extends HTTPItem{
     public final ResponseStatus responseStatus;
     public final Object body;
 
-    HTTPResponse(ProtocolVersion protocolVersion, ResponseStatus responseStatus, Object body) {
-        this.protocolVersion = protocolVersion;
+    HTTPResponse(ProtocolVersion protocolVersion, ResponseStatus responseStatus, HTTPHeaders headers, Object body) {
+        super(protocolVersion, headers);
         this.responseStatus = responseStatus;
         this.body = body;
     }
@@ -20,6 +19,7 @@ public class HTTPResponse {
         return "HTTPResponse{" +
                 "protocolVersion=" + protocolVersion +
                 ", responseStatus=" + responseStatus +
+                ", headers=" + headers +
                 ", body=" + body.getClass().getName() +
                 '}';
     }

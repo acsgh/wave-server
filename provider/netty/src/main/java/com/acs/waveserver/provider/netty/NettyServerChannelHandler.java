@@ -1,8 +1,6 @@
 package com.acs.waveserver.provider.netty;
 
-import com.acs.waveserver.core.HTTPRequest;
-import com.acs.waveserver.core.HTTPResponse;
-import com.acs.waveserver.core.Router;
+import com.acs.waveserver.core.*;
 import com.acs.waveserver.core.constants.ProtocolVersion;
 import com.acs.waveserver.core.constants.RequestMethod;
 import io.netty.buffer.Unpooled;
@@ -13,12 +11,14 @@ import io.netty.handler.codec.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static io.netty.handler.codec.http.HttpHeaderNames.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.CONTINUE;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 class NettyServerChannelHandler extends ChannelInboundHandlerAdapter {
-    private static final byte[] CONTENT = {'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd'};
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -63,19 +63,31 @@ class NettyServerChannelHandler extends ChannelInboundHandlerAdapter {
                 Unpooled.wrappedBuffer(waveResponse.getBytes())
         );
 
-        response.headers().set(CONTENT_TYPE, "text/html");
+        waveResponse.headers.stream().forEach(header -> response.headers().set(header.key, header.value));
+
         response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
         return response;
     }
-
 
 
     private HTTPRequest getWaveRequest(HttpRequest request) {
         return new HTTPRequest(
                 getWaveRequestMethod(request.method()),
                 request.uri(),
-                getWaveHTTPVersion(request.protocolVersion())
+                getWaveHTTPVersion(request.protocolVersion()),
+                getHeaders(request)
         );
+    }
+
+    private HTTPHeaders getHeaders(HttpRequest request) {
+        HTTPHeaders result = new HTTPHeaders();
+
+        if (request instanceof FullHttpRequest) {
+            FullHttpRequest fullRequest = (FullHttpRequest) request;
+            fullRequest.headers().forEach(header -> result.add(header.getKey(), header.getValue()));
+        }
+
+        return result;
     }
 
     private HttpVersion getNettyHttpVersion(ProtocolVersion protocolVersion) {

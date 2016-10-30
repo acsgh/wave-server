@@ -3,12 +3,13 @@ package com.acs.waveserver.core;
 import com.acs.waveserver.core.constants.ProtocolVersion;
 import com.acs.waveserver.core.constants.ResponseStatus;
 
-import static com.acs.waveserver.core.constants.ResponseStatus.*;
+import static com.acs.waveserver.core.constants.ResponseStatus.OK;
 
 public class HTTPResponseBuilder {
 
     private ProtocolVersion protocolVersion;
     private ResponseStatus responseStatus;
+    private HTTPHeaders headers = new HTTPHeaders();
     private Object body;
 
     public HTTPResponseBuilder(HTTPRequest request) {
@@ -17,7 +18,12 @@ public class HTTPResponseBuilder {
     }
 
     public HTTPResponse build() {
-        return new HTTPResponse(protocolVersion, responseStatus, body);
+        return new HTTPResponse(protocolVersion, responseStatus, headers, body);
+    }
+
+    public HTTPResponseBuilder header(String key, Object value) {
+        headers.add(key, value);
+        return this;
     }
 
     public HTTPResponseBuilder version(ProtocolVersion protocolVersion) {
@@ -30,7 +36,8 @@ public class HTTPResponseBuilder {
         return this;
     }
 
-    public void body(Object body) {
+    public HTTPResponseBuilder body(Object body) {
         this.body = body;
+        return this;
     }
 }

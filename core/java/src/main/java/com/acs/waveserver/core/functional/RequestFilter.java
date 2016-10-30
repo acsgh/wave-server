@@ -6,8 +6,9 @@ import com.acs.waveserver.core.HTTPResponseBuilder;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @FunctionalInterface
 public interface RequestFilter {
-    Optional<HTTPResponse> handle(HTTPRequest request, HTTPResponseBuilder responseBuilder, RequestFilter nextFilter);
+    Optional<HTTPResponse> handle(HTTPRequest request, HTTPResponseBuilder responseBuilder, Supplier<Optional<HTTPResponse>> nextJump);
 }

@@ -2,6 +2,9 @@ package com.acs.waveserver.core;
 
 import com.acs.waveserver.core.constants.RequestMethod;
 
+import java.util.HashMap;
+import java.util.Map;
+
 class Route<T> {
     final String uri;
     final RequestMethod method;
@@ -30,5 +33,25 @@ class Route<T> {
         int result = uri.hashCode();
         result = 31 * result + method.hashCode();
         return result;
+    }
+
+    public boolean canApply(HTTPRequest httpRequest) {
+        return (httpRequest.method == method) && matchUrl(httpRequest.uri);
+    }
+
+    private boolean matchUrl(String uri) {
+        return this.uri.equals(uri);
+    }
+
+    public Map<String, Object> extractParams(String uri) {
+        return new HashMap<>();
+    }
+
+    @Override
+    public String toString() {
+        return "Route{" +
+                "uri='" + uri + '\'' +
+                ", method=" + method +
+                '}';
     }
 }
