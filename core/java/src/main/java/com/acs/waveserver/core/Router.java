@@ -45,7 +45,7 @@ public class Router {
 
     public HTTPResponse process(HTTPRequest httpRequest) {
         HTTPResponseBuilder responseBuilder = new HTTPResponseBuilder(httpRequest);
-        log.debug("Request {} {}", httpRequest.method, httpRequest.uri);
+        log.debug("Request {} {}", httpRequest.method, httpRequest.uri.rawUri);
         StopWatch stopWatch = new StopWatch().start();
         try {
             return processFilters(httpRequest, responseBuilder)
@@ -54,7 +54,7 @@ public class Router {
         } catch (Exception e) {
             return exceptionHandler.handle(httpRequest, responseBuilder, e);
         } finally {
-            stopWatch.printElapseTime("Request " + httpRequest.method + " " + httpRequest.uri, log, LogLevel.DEBUG);
+            stopWatch.printElapseTime("Request " + httpRequest.method + " " + httpRequest.uri.rawUri, log, LogLevel.DEBUG);
         }
     }
 

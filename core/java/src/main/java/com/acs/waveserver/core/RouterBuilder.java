@@ -50,7 +50,6 @@ public class RouterBuilder {
 
     public RouterBuilder filter(String url, RequestMethod method, RequestFilter filter) {
         Route<RequestFilter> route = new Route<>(url, method, filter);
-        filters.remove(route);
         filters.add(route);
         return this;
     }
@@ -59,6 +58,18 @@ public class RouterBuilder {
         Route<RequestHandler> route = new Route<>(url, method, handler);
         handlers.remove(route);
         handlers.add(route);
+        return this;
+    }
+
+    public RouterBuilder removeFilter(String url, RequestMethod method) {
+        Route<RequestFilter> route = new Route<>(url, method, null);
+        filters.remove(route);
+        return this;
+    }
+
+    public RouterBuilder removeHandler(String url, RequestMethod method) {
+        Route<RequestHandler> route = new Route<>(url, method, null);
+        filters.remove(route);
         return this;
     }
 

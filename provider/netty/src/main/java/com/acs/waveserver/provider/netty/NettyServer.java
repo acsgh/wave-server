@@ -28,13 +28,15 @@ public final class NettyServer {
     private static Router getRouter() {
         RouterBuilder builder = new RouterBuilder();
         builder.filter("/", RequestMethod.GET, (request, responseBuilder, next) -> {
-            responseBuilder.body("Hello from filter!");
-            responseBuilder.header("filter", "1");
+            responseBuilder.header("filter1", "1");
+            return next.get();
+        });
+        builder.filter("/", RequestMethod.GET, (request, responseBuilder, next) -> {
+            responseBuilder.header("filter2", "1");
             return next.get();
         });
         builder.handler("/", RequestMethod.GET, (request, responseBuilder) -> {
             responseBuilder.body("Hello from Handler!");
-            responseBuilder.header("handler", "1");
             return Optional.of(responseBuilder.build());
         });
         return builder.build();
