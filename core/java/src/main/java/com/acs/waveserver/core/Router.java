@@ -58,13 +58,6 @@ public class Router {
         }
     }
 
-    private Optional<Route<RequestHandler>> getRequestHandler(HTTPRequest httpRequest) {
-        return handlers.stream()
-                .filter(route -> route.canApply(httpRequest))
-                .map(Optional::of)
-                .reduce(Optional.empty(), (a, b) -> b);
-    }
-
     private HTTPResponse getErrorResponse(HTTPRequest httpRequest, HTTPResponseBuilder responseBuilder, ResponseStatus responseStatus) {
         ErrorCodeHandler errorCodeHandler = errorCodeHandlers.getOrDefault(responseStatus, defaultErrorCodeHandler);
         return errorCodeHandler.handle(httpRequest, responseBuilder, responseStatus);
@@ -82,12 +75,12 @@ public class Router {
         if (index < routes.size()) {
             Route<RequestFilter> route = routes.get(index);
             return () -> {
-                log.debug("Filter {} {}", route.method, route.uri);
+                log.trace("Filter {} {}", route.method, route.uri);
                 StopWatch stopWatch = new StopWatch().start();
                 try {
                     return route.handler.handle(httpRequest.ofRoute(route), responseBuilder, getSupplier(httpRequest, responseBuilder, routes, index + 1));
                 } finally {
-                    stopWatch.printElapseTime("Filter " + route.method + " " + route.uri, log, LogLevel.DEBUG);
+                    stopWatch.printElapseTime("Filter " + route.method + " " + route.uri, log, LogLevel.TRACE);
                 }
             };
         } else {
@@ -100,13 +93,20 @@ public class Router {
         Optional<Route<RequestHandler>> handleRoute = getRequestHandler(httpRequest);
 
         return handleRoute.flatMap(route -> {
-            log.debug("Handler {} {}", route.method, route.uri);
+            log.trace("Handler {} {}", route.method, route.uri);
             StopWatch stopWatch = new StopWatch().start();
             try {
                 return route.handler.handle(httpRequest.ofRoute(route), responseBuilder);
             } finally {
-                stopWatch.printElapseTime("Handler " + route.method + " " + route.uri, log, LogLevel.DEBUG);
+                stopWatch.printElapseTime("Handler " + route.method + " " + route.uri, log, LogLevel.TRACE);
             }
         });
+    }
+
+    private Optional<Route<RequestHandler>> getRequestHandler(HTTPRequest httpRequest) {
+        return handlers.stream()
+                .filter(route -> route.canApply(httpRequest))
+                .map(Optional::of)
+                .reduce(Optional.empty(), (a, b) -> b);
     }
 }
