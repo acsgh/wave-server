@@ -1,5 +1,6 @@
 rootProject.name = 'wave-server'
 
+include ':core/utils'
 include ':core/java'
 include ':provider/netty'
 

@@ -2,6 +2,7 @@ package com.acs.waveserver.provider.netty;
 
 import com.acs.waveserver.core.Router;
 import com.acs.waveserver.core.RouterBuilder;
+import com.acs.waveserver.core.constants.RequestMethod;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLException;
 import java.security.cert.CertificateException;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class NettyServer {
@@ -25,6 +27,10 @@ public final class NettyServer {
 
     private static Router getRouter() {
         RouterBuilder builder = new RouterBuilder();
+        builder.filter("/", RequestMethod.GET, (request, responseBuilder, next) -> {
+            responseBuilder.body("Hello from filter!");
+            return Optional.of(responseBuilder.build());
+        });
         return builder.build();
     }
 

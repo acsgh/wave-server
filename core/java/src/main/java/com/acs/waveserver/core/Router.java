@@ -14,13 +14,13 @@ import java.util.Optional;
 
 public class Router {
 
-    public final List<RequestFilter> filters;
-    public final List<RequestHandler> handlers;
+    public final List<Route<RequestFilter>> filters;
+    public final List<Route<RequestHandler>> handlers;
     public final Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers;
     public final ErrorCodeHandler defaultErrorCodeHandler;
     public final ExceptionHandler exceptionHandler;
 
-    Router(List<RequestFilter> filters, List<RequestHandler> handlers, Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers, ErrorCodeHandler defaultErrorCodeHandler, ExceptionHandler exceptionHandler) {
+    Router(List<Route<RequestFilter>> filters, List<Route<RequestHandler>> handlers, Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers, ErrorCodeHandler defaultErrorCodeHandler, ExceptionHandler exceptionHandler) {
         checkNotNull("filters", filters);
         checkNotNull("handlers", handlers);
         checkNotNull("errorCodeHandlers", errorCodeHandlers);

@@ -15,8 +15,8 @@ import java.util.Map;
 
 public class RouterBuilder {
 
-    private final List<RequestFilter> filters = new ArrayList<>();
-    private final List<RequestHandler> handlers = new ArrayList<>();
+    private final List<Route<RequestFilter>> filters = new ArrayList<>();
+    private final List<Route<RequestHandler>> handlers = new ArrayList<>();
     private final Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers = new HashMap<>();
     private ErrorCodeHandler defaultErrorCodeHandler;
     private ExceptionHandler exceptionHandler;
@@ -49,10 +49,16 @@ public class RouterBuilder {
     }
 
     public RouterBuilder filter(String url, RequestMethod method, RequestFilter filter) {
+        Route<RequestFilter> route = new Route<>(url, method, filter);
+        filters.remove(route);
+        filters.add(route);
         return this;
     }
 
     public RouterBuilder handler(String url, RequestMethod method, RequestHandler handler) {
+        Route<RequestHandler> route = new Route<>(url, method, handler);
+        handlers.remove(route);
+        handlers.add(route);
         return this;
     }
 
