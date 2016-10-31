@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.security.cert.CertificateException;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -24,7 +26,9 @@ public final class NettyServer {
         Runtime.getRuntime().addShutdownHook(new Thread(nettyServer::stop));
 
     }
-
+public enum Type{
+    important, not_important
+}
     private static Router getRouter() {
         RouterBuilder builder = new RouterBuilder();
         builder.filter("/", RequestMethod.GET, (request, responseBuilder, next) -> {
@@ -33,6 +37,7 @@ public final class NettyServer {
         });
         builder.filter("/", RequestMethod.GET, (request, responseBuilder, next) -> {
             responseBuilder.header("filter2", "1");
+            System.out.println(request.uri.getQueryParams().get("cosa", int.class));
             return next.get();
         });
         builder.handler("/", RequestMethod.GET, (request, responseBuilder) -> {

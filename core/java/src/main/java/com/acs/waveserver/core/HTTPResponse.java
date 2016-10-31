@@ -1,8 +1,8 @@
 package com.acs.waveserver.core;
 
 import com.acs.waveserver.core.constants.ProtocolVersion;
-import com.acs.waveserver.core.constants.ResponseStatus;
 import com.acs.waveserver.core.utils.ExceptionUtils;
+import com.acs.waveserver.core.constants.ResponseStatus;
 
 public class HTTPResponse extends HTTPItem{
     public final ResponseStatus responseStatus;

@@ -1,6 +1,9 @@
 package com.acs.waveserver.provider.netty;
 
-import com.acs.waveserver.core.*;
+import com.acs.waveserver.core.HTTPHeaders;
+import com.acs.waveserver.core.HTTPRequest;
+import com.acs.waveserver.core.HTTPResponse;
+import com.acs.waveserver.core.Router;
 import com.acs.waveserver.core.constants.ProtocolVersion;
 import com.acs.waveserver.core.constants.RequestMethod;
 import io.netty.buffer.Unpooled;
@@ -10,9 +13,6 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.CONTINUE;

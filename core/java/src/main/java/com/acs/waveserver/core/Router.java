@@ -2,6 +2,7 @@ package com.acs.waveserver.core;
 
 
 import com.acs.waveserver.core.constants.ResponseStatus;
+import com.acs.waveserver.core.exception.ParameterException;
 import com.acs.waveserver.core.functional.ErrorCodeHandler;
 import com.acs.waveserver.core.functional.ExceptionHandler;
 import com.acs.waveserver.core.functional.RequestFilter;
@@ -51,6 +52,9 @@ public class Router {
             return processFilters(httpRequest, responseBuilder)
                     .orElse(processHandler(httpRequest, responseBuilder)
                             .orElse(getErrorResponse(httpRequest, responseBuilder, ResponseStatus.NOT_FOUND)));
+        } catch (ParameterException e) {
+            log.debug("Invalid Parameter", e);
+            return getErrorResponse(httpRequest, responseBuilder, ResponseStatus.BAD_REQUEST);
         } catch (Exception e) {
             return exceptionHandler.handle(httpRequest, responseBuilder, e);
         } finally {
