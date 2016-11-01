@@ -1,10 +1,10 @@
 package com.acs.waveserver.core;
 
 import com.acs.waveserver.core.constants.ProtocolVersion;
-import com.acs.waveserver.core.utils.ExceptionUtils;
 import com.acs.waveserver.core.constants.ResponseStatus;
+import com.acs.waveserver.core.utils.ExceptionUtils;
 
-public class HTTPResponse extends HTTPItem{
+public class HTTPResponse extends HTTPItem {
     public final ResponseStatus responseStatus;
     public final Object body;
 
@@ -29,7 +29,7 @@ public class HTTPResponse extends HTTPItem{
 
         if (body != null) {
             if (body instanceof String) {
-                result = stringToBytes((String)  body);
+                result = stringToBytes((String) body);
             }
         }
 
@@ -39,7 +39,7 @@ public class HTTPResponse extends HTTPItem{
     public byte[] stringToBytes(String string) {
         byte[] result = null;
         try {
-            result= string. getBytes("UTF-8");
+            result = string.getBytes("UTF-8");
         } catch (Exception e) {
             ExceptionUtils.throwRuntimeException(e);
         }

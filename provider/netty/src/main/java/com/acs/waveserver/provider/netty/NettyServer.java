@@ -10,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.security.cert.CertificateException;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -26,22 +24,21 @@ public final class NettyServer {
         Runtime.getRuntime().addShutdownHook(new Thread(nettyServer::stop));
 
     }
-public enum Type{
-    important, not_important
-}
+
     private static Router getRouter() {
         RouterBuilder builder = new RouterBuilder();
         builder.filter("/", RequestMethod.GET, (request, responseBuilder, next) -> {
             responseBuilder.header("filter1", "1");
             return next.get();
         });
-        builder.filter("/", RequestMethod.GET, (request, responseBuilder, next) -> {
+        builder.filter("/{id}", RequestMethod.GET, (request, responseBuilder, next) -> {
             responseBuilder.header("filter2", "1");
-            System.out.println(request.uri.getQueryParams().get("cosa", int.class));
             return next.get();
         });
-        builder.handler("/", RequestMethod.GET, (request, responseBuilder) -> {
-            responseBuilder.body("Hello from Handler!");
+
+        builder.handler("/{id}", RequestMethod.GET, (request, responseBuilder) -> {
+            responseBuilder.header("Content-Type", "text/html");
+            responseBuilder.body("Hello from Handler: " + request.pathParams().get("id", Long.class) + "<br/>" + request.fullUri());
             return Optional.of(responseBuilder.build());
         });
         return builder.build();

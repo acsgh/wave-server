@@ -3,17 +3,20 @@ package com.acs.waveserver.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class HTTPAddress {
 
     private static final Logger log = LoggerFactory.getLogger(HTTPAddress.class);
 
-    public static HTTPAddress build(String rawUri) {
+    static HTTPAddress build(String rawUri) {
         try {
             URI uri = new URI(rawUri);
             return new HTTPAddress(uri, new HTTPParams(), extractQueryParam(uri.getQuery()));
@@ -23,6 +26,9 @@ public class HTTPAddress {
     }
 
     private static HTTPParams extractQueryParam(String query) {
+        if (query == null) {
+            return new HTTPParams();
+        }
         Map<String, String> params = Arrays.stream(query.split("&"))
                 .map(HTTPAddress::toMapEntry)
                 .filter(Optional::isPresent)
@@ -48,71 +54,73 @@ public class HTTPAddress {
         return result;
     }
 
-    private final URI uri;
-    private final HTTPParams pathParams;
-    private final HTTPParams queryParams;
+    final URI uri;
+    final HTTPParams pathParams;
+    final HTTPParams queryParams;
 
-    public HTTPAddress(URI uri, HTTPParams pathParams, HTTPParams queryParams) {
+    HTTPAddress(URI uri, HTTPParams pathParams, HTTPParams queryParams) {
         this.uri = uri;
         this.pathParams = pathParams;
         this.queryParams = queryParams;
-    }
-
-    public URI getUri() {
-        return uri;
-    }
-
-    public HTTPParams getPathParams() {
-        return pathParams;
-    }
-
-    public HTTPParams getQueryParams() {
-        return queryParams;
-    }
-
-    public String getScheme() {
-        return uri.getScheme();
-    }
-
-    public boolean isAbsolute() {
-        return uri.isAbsolute();
-    }
-
-    public String getHost() {
-        return uri.getHost();
-    }
-
-    public int getPort() {
-        return uri.getPort();
-    }
-
-    public String getRawPath() {
-        return uri.getRawPath();
-    }
-
-    public String getPath() {
-        return uri.getPath();
-    }
-
-    public String getRawQuery() {
-        return uri.getRawQuery();
-    }
-
-    public String getQuery() {
-        return uri.getQuery();
     }
 
     public HTTPAddress clone() {
         return new HTTPAddress(uri, pathParams, queryParams);
     }
 
-    HTTPAddress ofRoute(Route<?> route) {
-        return new HTTPAddress(uri, extractPathParams(route.uri), queryParams);
+    HTTPAddress ofRoute(String routeUri) {
+        return new HTTPAddress(uri, extractPathParams(routeUri), queryParams);
+    }
+
+
+    boolean matchUrl(String routeUri) {
+        String pattern = getPattern(routeUri);
+        return Pattern.matches(pattern, uri.getPath());
     }
 
     private HTTPParams extractPathParams(String routeUri) {
         Map<String, String> params = new HashMap<>();
+
+        if (matchUrl(routeUri)) {
+            List<String> names = getParamNames(routeUri);
+
+            String patternString = getPattern(routeUri);
+
+            Pattern pattern = Pattern.compile(patternString);
+            Matcher matcher = pattern.matcher(uri.getPath());
+            if (matcher.find()) {
+                for (int i = 1; i <= matcher.groupCount(); i++) {
+                    params.put(names.get(i - 1), urlDecode(matcher.group(i)));
+                }
+            }
+        }
+
         return new HTTPParams(params);
+    }
+
+    private String urlDecode(String value) {
+        try {
+            return URLDecoder.decode(value, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String getPattern(String routeUri) {
+        String pattern = routeUri.replaceAll("\\*", ".*");
+        pattern = pattern.replaceAll("\\{[a-zA-Z0-9%.&&[^/{}+]]*\\}", "([a-zA-Z0-9+%.&&[^/{}]]*)");
+        pattern = pattern.replaceAll("\\{[a-zA-Z0-9+%.&&[^/{}]]*\\+\\}", "([a-zA-Z0-9+%./&&[^{}]]*)");
+        return pattern;
+    }
+
+    private List<String> getParamNames(String routeUri) {
+        List<String> names = new ArrayList<>();
+        Pattern pattern = Pattern.compile("(\\{[a-zA-Z0-9+%&&[^/{}]]*\\})");
+        Matcher matcher = pattern.matcher(routeUri);
+        while (matcher.find()) {
+            names.add(matcher.group().replace("{", "").replace("+}", "").replace("}", ""));
+        }
+        return names;
     }
 
     @Override

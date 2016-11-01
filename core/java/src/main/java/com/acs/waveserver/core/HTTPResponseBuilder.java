@@ -12,7 +12,7 @@ public class HTTPResponseBuilder {
     private HTTPHeaders headers = new HTTPHeaders();
     private Object body;
 
-    public HTTPResponseBuilder(HTTPRequest request) {
+    HTTPResponseBuilder(HTTPRequest request) {
         version(request.protocolVersion);
         status(OK);
     }

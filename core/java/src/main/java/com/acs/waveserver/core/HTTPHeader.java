@@ -4,7 +4,7 @@ public class HTTPHeader {
     public final String key;
     public final String value;
 
-    public HTTPHeader(String key, String value) {
+    HTTPHeader(String key, String value) {
         this.key = key;
         this.value = value;
     }

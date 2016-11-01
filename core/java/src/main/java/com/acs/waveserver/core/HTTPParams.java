@@ -1,8 +1,8 @@
 package com.acs.waveserver.core;
 
 import com.acs.waveserver.core.exception.InvalidParameterFormatException;
-import com.acs.waveserver.core.utils.ValuesConverter;
 import com.acs.waveserver.core.exception.ParameterNotFoundException;
+import com.acs.waveserver.core.utils.ValuesConverter;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -53,7 +53,6 @@ public class HTTPParams {
 
     @SuppressWarnings("unchecked")
     public <T> T convert(String key, String value, Class<T> parameterClass) {
-//        parameterClass = ValuesConverter.dePrimitive(parameterClass);
         try {
             if (parameterClass == String.class) {
                 return (T) value;
