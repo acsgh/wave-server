@@ -1,5 +1,7 @@
 subprojects{
     apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'signing'
 
 
     sourceCompatibility = 1.8
@@ -9,9 +11,76 @@ subprojects{
         mavenCentral()
     }
 
+    artifacts {
+        archives javadocJar, sourcesJar
+    }
+
+    signing {
+        sign configurations.archives
+    }
+
     task bundle(type: Copy, dependsOn: 'assemble') {
         into "build/lib/libs"
         from configurations.runtime
+    }
+
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
+    }
+
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    task javadoc(type: Javadoc) {
+        source = sourceSets.main.allJava
+    }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                pom.project {
+                    name 'Wave Server'
+                    packaging 'jar'
+                    // optionally artifactId can be defined here
+                    description 'A application used as an example on how to set up pushing  its components to the Central Repository.'
+                    url 'https://github.com/albertoteloko/wave-server'
+
+                    scm {
+                        connection 'git@github.com:albertoteloko/wave-server.git'
+                        developerConnection 'scm:svn:https://foo.googlecode.com/svn/trunk/'
+                        url 'https://github.com/albertoteloko/wave-server'
+                    }
+
+                    licenses {
+                        license {
+                            name 'The Apache License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'albertoteloko'
+                            name 'Alberto Crespo'
+                            email 'albertocresposanchez@gmail.com'
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }
