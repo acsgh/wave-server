@@ -45,7 +45,7 @@ public class Router {
     }
 
     public HTTPResponse process(HTTPRequest httpRequest) {
-        HTTPResponseBuilder responseBuilder = new HTTPResponseBuilder(httpRequest);
+        HTTPResponseBuilder responseBuilder = new HTTPResponseBuilder(httpRequest, this);
         log.debug("Request {} {}", httpRequest.method, httpRequest.uri());
         StopWatch stopWatch = new StopWatch().start();
         try {
@@ -62,7 +62,7 @@ public class Router {
         }
     }
 
-    private HTTPResponse getErrorResponse(HTTPRequest httpRequest, HTTPResponseBuilder responseBuilder, ResponseStatus responseStatus) {
+    HTTPResponse getErrorResponse(HTTPRequest httpRequest, HTTPResponseBuilder responseBuilder, ResponseStatus responseStatus) {
         ErrorCodeHandler errorCodeHandler = errorCodeHandlers.getOrDefault(responseStatus, defaultErrorCodeHandler);
         return errorCodeHandler.handle(httpRequest, responseBuilder, responseStatus);
     }

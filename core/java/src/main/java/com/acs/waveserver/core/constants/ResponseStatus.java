@@ -32,6 +32,7 @@ public enum ResponseStatus {
     GONE(410, "Gone"),
     LENGTH_REQUIRED(411, "Length Required"),
     PRECONDITION_FAILED(412, "Precondition Failed"),
+    I_AM_A_TEAPOT(418, "I'am a teapot"),
     REQUEST_ENTITY_TOO_LARGE(413, "Request Entity Too Large"),
     REQUEST_URI_TOO_LONG(414, "Request-URI Too Long"),
     UNSUPPORTED_MEDIA_TYPE(415, "Unsupported Media Type"),
