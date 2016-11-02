@@ -1,4 +1,4 @@
-package com.acs.waveserver.provider.netty;
+package com.acs.waveserver.provider.common;
 
 import com.acs.waveserver.core.Router;
 import io.netty.bootstrap.ServerBootstrap;

@@ -1,4 +1,4 @@
-package com.acs.waveserver.provider.netty;
+package com.acs.waveserver.provider.common;
 
 import com.acs.waveserver.core.HTTPHeaders;
 import com.acs.waveserver.core.HTTPRequest;

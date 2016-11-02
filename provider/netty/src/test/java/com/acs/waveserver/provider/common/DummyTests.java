@@ -1,4 +1,4 @@
-package com.acs.waveserver.provider.netty;
+package com.acs.waveserver.provider.common;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
