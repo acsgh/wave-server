@@ -75,7 +75,8 @@ class NettyServerChannelHandler extends ChannelInboundHandlerAdapter {
                 getWaveRequestMethod(request.method()),
                 request.uri(),
                 getWaveHTTPVersion(request.protocolVersion()),
-                getHeaders(request)
+                getHeaders(request),
+                ""
         );
     }
 

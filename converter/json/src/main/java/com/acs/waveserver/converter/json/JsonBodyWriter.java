@@ -1,27 +1,16 @@
 package com.acs.waveserver.converter.json;
 
-import com.acs.waveserver.core.functional.BodyConverter;
+import com.acs.waveserver.core.functional.BodyWriter;
 import com.acs.waveserver.core.utils.ExceptionUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-public class JsonConverter implements BodyConverter {
-
-
-    private static ObjectMapper getDefaultMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        return objectMapper;
-    }
+public class JsonBodyWriter implements BodyWriter {
 
     private final ObjectMapper objectMapper;
 
-    public JsonConverter() {
-        this(getDefaultMapper());
-    }
-
-    public JsonConverter(ObjectMapper objectMapper) {
+    public JsonBodyWriter(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
@@ -31,7 +20,7 @@ public class JsonConverter implements BodyConverter {
     }
 
     @Override
-    public <T> String convert(T body) {
+    public <T> String marshall(T body) {
         String result = null;
 
         if (body != null) {

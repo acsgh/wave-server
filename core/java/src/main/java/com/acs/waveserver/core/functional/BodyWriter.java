@@ -1,10 +1,11 @@
 package com.acs.waveserver.core.functional;
 
 @FunctionalInterface
-public interface BodyConverter {
+public interface BodyWriter {
     default String contentType() {
         return "text/html";
     }
 
-    <T> String convert(T body);
+    <T> String marshall(T body);
+
 }
