@@ -20,7 +20,7 @@ public class JsonBodyWriter implements BodyWriter {
     }
 
     @Override
-    public <T> String marshall(T body) {
+    public <T> String write(T body) {
         String result = null;
 
         if (body != null) {

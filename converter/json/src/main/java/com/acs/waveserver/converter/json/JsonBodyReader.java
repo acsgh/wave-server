@@ -22,7 +22,7 @@ public class JsonBodyReader<T> implements BodyReader<T> {
     }
 
     @Override
-    public T unmarshall(String body) {
+    public T read(String body) {
         T result = null;
         try {
             result = objectMapper.readValue(body, objectClass);

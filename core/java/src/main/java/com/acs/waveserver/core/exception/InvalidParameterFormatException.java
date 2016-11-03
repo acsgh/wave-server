@@ -2,7 +2,7 @@ package com.acs.waveserver.core.exception;
 
 public class InvalidParameterFormatException extends ParameterException {
     private static String getExceptionMessage(String key, String value, Class<?> parameterClass) {
-        return "Parameter '" + key + "' with value '" + value + "' cannot be marshall to " + parameterClass.getName();
+        return "Parameter '" + key + "' with value '" + value + "' cannot be write to " + parameterClass.getName();
     }
 
     public <T> InvalidParameterFormatException(String key, String value, Class<T> parameterClass) {

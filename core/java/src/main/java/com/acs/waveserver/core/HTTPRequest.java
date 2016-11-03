@@ -2,7 +2,10 @@ package com.acs.waveserver.core;
 
 import com.acs.waveserver.core.constants.ProtocolVersion;
 import com.acs.waveserver.core.constants.RequestMethod;
+import com.acs.waveserver.core.exception.UnexpectedContentTypeException;
 import com.acs.waveserver.core.functional.BodyReader;
+
+import java.util.Set;
 
 public class HTTPRequest extends HTTPItem {
 
@@ -43,7 +46,15 @@ public class HTTPRequest extends HTTPItem {
 
     public <T> T body(BodyReader<T> reader) {
         String contentType = headers.getMandatory("Content-Type", String.class);
-        return null;
+
+        if (!validContentType(reader.contentType(), contentType)) {
+            throw new UnexpectedContentTypeException(contentType);
+        }
+        return reader.read(body());
+    }
+
+    private <T> boolean validContentType(Set<String> contentTypes, String contentType) {
+        return (contentTypes.isEmpty()) || (contentTypes.stream().anyMatch(type -> type.equalsIgnoreCase(contentType)));
     }
 
     HTTPRequest ofRoute(Route<?> route) {

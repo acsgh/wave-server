@@ -5,7 +5,7 @@ public class ParameterNotFoundException extends ParameterException {
         this("Parameter", parameterKey);
     }
 
-    public ParameterNotFoundException(String parameterTpe, String parameterKey) {
-        super(parameterTpe + " '" + parameterKey + "' not found");
+    public ParameterNotFoundException(String parameterType, String parameterKey) {
+        super(parameterType + " '" + parameterKey + "' not found");
     }
 }

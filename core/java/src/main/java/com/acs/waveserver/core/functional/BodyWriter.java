@@ -6,6 +6,6 @@ public interface BodyWriter {
         return "text/html";
     }
 
-    <T> String marshall(T body);
+    <T> String write(T body);
 
 }
