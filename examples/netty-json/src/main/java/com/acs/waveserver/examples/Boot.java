@@ -1,5 +1,6 @@
 package com.acs.waveserver.examples;
 
+import com.acs.waveserver.converter.json.JsonConverter;
 import com.acs.waveserver.core.Router;
 import com.acs.waveserver.core.RouterBuilder;
 import com.acs.waveserver.core.constants.RequestMethod;
@@ -26,10 +27,10 @@ public final class Boot {
 
     private static Router getRouter(JsonSupport jsonSupport) {
         RouterBuilder builder = new RouterBuilder();
+        JsonConverter jsonConverter = new JsonConverter();
 
         builder.handler("/person/{id}", RequestMethod.GET, (request, responseBuilder) -> {
-            responseBuilder.header("Content-Type", "application/json");
-            responseBuilder.body(new Person(1L, "Jonh Doe", 30), jsonSupport::marshall);
+            responseBuilder.body(new Person(1L, "Jonh Doe", 30), jsonConverter);
             return Optional.of(responseBuilder.build());
         });
         return builder.build();

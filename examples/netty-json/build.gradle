@@ -1,5 +1,6 @@
 dependencies {
     compile project(":wave-server-core-java")
+    compile project(":wave-server-converter-json")
     compile project(":wave-server-provider-netty")
 
     compile group: 'org.projectlombok', name: 'lombok', version: '1.16.10'

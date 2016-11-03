@@ -20,6 +20,10 @@ public class HTTPHeaders {
         headers.add(new HTTPHeader(key, toHeaderString(value)));
     }
 
+    public boolean containsKey(String key) {
+        return headers.stream().anyMatch(header -> header.key.equalsIgnoreCase(key));
+    }
+
     public Stream<HTTPHeader> stream() {
         return headers.stream();
     }
@@ -50,4 +54,5 @@ public class HTTPHeaders {
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
         return format.format(date);
     }
+
 }

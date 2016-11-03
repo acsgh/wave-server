@@ -2,8 +2,7 @@ package com.acs.waveserver.core;
 
 import com.acs.waveserver.core.constants.ProtocolVersion;
 import com.acs.waveserver.core.constants.ResponseStatus;
-
-import java.util.function.Function;
+import com.acs.waveserver.core.functional.BodyConverter;
 
 import static com.acs.waveserver.core.constants.ResponseStatus.OK;
 
@@ -53,8 +52,13 @@ public class HTTPResponseBuilder {
         return this;
     }
 
-    public <T> HTTPResponseBuilder body(T body, Function<T, String> converter) {
-        this.body = converter.apply(body);
+    public <T> HTTPResponseBuilder body(T body, BodyConverter converter) {
+        this.body = converter.convert(body);
+
+        if (!headers.containsKey("Content-Type")) {
+            header("Content-Type", converter.contentType());
+        }
+
         return this;
     }
 
