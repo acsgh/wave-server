@@ -6,15 +6,18 @@ import com.acs.waveserver.core.HTTPResponse;
 import com.acs.waveserver.core.Router;
 import com.acs.waveserver.core.constants.ProtocolVersion;
 import com.acs.waveserver.core.constants.RequestMethod;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.*;
+import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static io.netty.handler.codec.http.HttpHeaderNames.*;
+import static io.netty.handler.codec.http.HttpHeaderNames.CONNECTION;
+import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_LENGTH;
 import static io.netty.handler.codec.http.HttpResponseStatus.CONTINUE;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
@@ -76,18 +79,27 @@ class NettyServerChannelHandler extends ChannelInboundHandlerAdapter {
                 request.uri(),
                 getWaveHTTPVersion(request.protocolVersion()),
                 getHeaders(request),
-                ""
+                getBody(request)
         );
+    }
+
+    private String getBody(HttpRequest request) {
+        String body = "";
+
+        if (request instanceof HttpContent) {
+            HttpContent httpContent = (HttpContent) request;
+            ByteBuf content = httpContent.content();
+            if (content.isReadable()) {
+                body = content.toString(CharsetUtil.UTF_8);
+            }
+        }
+
+        return body;
     }
 
     private HTTPHeaders getHeaders(HttpRequest request) {
         HTTPHeaders result = new HTTPHeaders();
-
-        if (request instanceof FullHttpRequest) {
-            FullHttpRequest fullRequest = (FullHttpRequest) request;
-            fullRequest.headers().forEach(header -> result.add(header.getKey(), header.getValue()));
-        }
-
+        request.headers().forEach(header -> result.add(header.getKey(), header.getValue()));
         return result;
     }
 

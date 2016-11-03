@@ -65,7 +65,7 @@ public class HTTPHeaders {
     public <T> List<T> get(String key, Function<String, T> converter) {
         return headers.stream()
                 .filter(header -> header.key.equalsIgnoreCase(key))
-                .map(header -> converter.apply(header.key))
+                .map(header -> converter.apply(header.value))
                 .collect(Collectors.toList());
     }
 

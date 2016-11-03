@@ -4,6 +4,7 @@ import com.acs.waveserver.core.Router;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.ssl.SslContext;
 
@@ -25,6 +26,7 @@ class NettyServerChannelInitializer extends ChannelInitializer<SocketChannel> {
             p.addLast(sslCtx.newHandler(ch.alloc()));
         }
         p.addLast(new HttpServerCodec());
+        p.addLast(new HttpObjectAggregator(64 * 1024 * 1024));
         p.addLast(new NettyServerChannelHandler(router));
     }
 }

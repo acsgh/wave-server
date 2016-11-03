@@ -53,7 +53,7 @@ public class HTTPRequest extends HTTPItem {
         return reader.read(body());
     }
 
-    private <T> boolean validContentType(Set<String> contentTypes, String contentType) {
+    private  boolean validContentType(Set<String> contentTypes, String contentType) {
         return (contentTypes.isEmpty()) || (contentTypes.stream().anyMatch(type -> type.equalsIgnoreCase(contentType)));
     }
 
