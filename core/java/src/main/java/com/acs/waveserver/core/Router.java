@@ -56,6 +56,7 @@ public class Router {
             log.debug("Invalid Parameter", e);
             return getErrorResponse(httpRequest, responseBuilder, ResponseStatus.BAD_REQUEST);
         } catch (Exception e) {
+            log.error("Error during request", e);
             return exceptionHandler.handle(httpRequest, responseBuilder, e);
         } finally {
             stopWatch.printElapseTime("Request " + httpRequest.method + " " + httpRequest.uri(), log, LogLevel.DEBUG);
@@ -79,12 +80,12 @@ public class Router {
         if (index < routes.size()) {
             Route<RequestFilter> route = routes.get(index);
             return () -> {
-                log.trace("Filter {} {}", route.method, route.uri);
+                log.trace("Filter {} {}", route.methods, route.uri);
                 StopWatch stopWatch = new StopWatch().start();
                 try {
                     return route.handler.handle(httpRequest.ofRoute(route), responseBuilder, getSupplier(httpRequest, responseBuilder, routes, index + 1));
                 } finally {
-                    stopWatch.printElapseTime("Filter " + route.method + " " + route.uri, log, LogLevel.TRACE);
+                    stopWatch.printElapseTime("Filter " + route.methods + " " + route.uri, log, LogLevel.TRACE);
                 }
             };
         } else {
@@ -97,12 +98,12 @@ public class Router {
         Optional<Route<RequestHandler>> handleRoute = getRequestHandler(httpRequest);
 
         return handleRoute.flatMap(route -> {
-            log.trace("Handler {} {}", route.method, route.uri);
+            log.trace("Handler {} {}", route.methods, route.uri);
             StopWatch stopWatch = new StopWatch().start();
             try {
                 return route.handler.handle(httpRequest.ofRoute(route), responseBuilder);
             } finally {
-                stopWatch.printElapseTime("Handler " + route.method + " " + route.uri, log, LogLevel.TRACE);
+                stopWatch.printElapseTime("Handler " + route.methods + " " + route.uri, log, LogLevel.TRACE);
             }
         });
     }

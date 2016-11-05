@@ -25,7 +25,7 @@ public class JsonBodyReader<T> implements BodyReader<T> {
     }
 
     @Override
-    public T read(String body) {
+    public T read(byte[] body) {
         T result = null;
         try {
             result = objectMapper.readValue(body, objectClass);

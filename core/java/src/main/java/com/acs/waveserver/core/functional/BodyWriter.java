@@ -6,6 +6,6 @@ public interface BodyWriter {
         return "text/html";
     }
 
-    <T> String write(T body);
+    <T> byte[] write(T body);
 
 }

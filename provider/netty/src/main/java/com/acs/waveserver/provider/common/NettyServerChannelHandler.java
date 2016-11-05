@@ -7,6 +7,7 @@ import com.acs.waveserver.core.Router;
 import com.acs.waveserver.core.constants.ProtocolVersion;
 import com.acs.waveserver.core.constants.RequestMethod;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -63,7 +64,7 @@ class NettyServerChannelHandler extends ChannelInboundHandlerAdapter {
         FullHttpResponse response = new DefaultFullHttpResponse(
                 getNettyHttpVersion(waveResponse.protocolVersion),
                 HttpResponseStatus.valueOf(waveResponse.responseStatus.code),
-                Unpooled.wrappedBuffer(waveResponse.getBytes())
+                Unpooled.wrappedBuffer(waveResponse.body)
         );
 
         waveResponse.headers.stream().forEach(header -> response.headers().set(header.key, header.value));
@@ -83,14 +84,14 @@ class NettyServerChannelHandler extends ChannelInboundHandlerAdapter {
         );
     }
 
-    private String getBody(HttpRequest request) {
-        String body = "";
+    private byte[] getBody(HttpRequest request) {
+        byte[] body = new byte[0];
 
         if (request instanceof HttpContent) {
             HttpContent httpContent = (HttpContent) request;
             ByteBuf content = httpContent.content();
             if (content.isReadable()) {
-                body = content.toString(CharsetUtil.UTF_8);
+                body = ByteBufUtil.getBytes(content);
             }
         }
 

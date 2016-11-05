@@ -8,10 +8,8 @@ import com.acs.waveserver.core.functional.RequestFilter;
 import com.acs.waveserver.core.functional.RequestHandler;
 import com.acs.waveserver.core.utils.ExceptionUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class RouterBuilder {
 
@@ -48,29 +46,37 @@ public class RouterBuilder {
         return this;
     }
 
-    public RouterBuilder filter(String url, RequestMethod method, RequestFilter filter) {
-        Route<RequestFilter> route = new Route<>(url, method, filter);
+    public RouterBuilder filter(String url, RequestFilter filter, RequestMethod... methods) {
+        Route<RequestFilter> route = new Route<>(url, toSet(methods), filter);
         filters.add(route);
         return this;
     }
 
-    public RouterBuilder handler(String url, RequestMethod method, RequestHandler handler) {
-        Route<RequestHandler> route = new Route<>(url, method, handler);
+    public RouterBuilder handler(String url, RequestHandler handler, RequestMethod... methods) {
+        Route<RequestHandler> route = new Route<>(url, toSet(methods), handler);
         handlers.remove(route);
         handlers.add(route);
         return this;
     }
 
     public RouterBuilder removeFilter(String url, RequestMethod method) {
-        Route<RequestFilter> route = new Route<>(url, method, null);
-        filters.remove(route);
+        List<Route<RequestFilter>> toRemove = filters.stream()
+                .filter(route -> route.uri.equalsIgnoreCase(url) && route.methods.contains(method))
+                .collect(Collectors.toList());
+        filters.removeAll(toRemove);
         return this;
     }
 
     public RouterBuilder removeHandler(String url, RequestMethod method) {
-        Route<RequestHandler> route = new Route<>(url, method, null);
-        filters.remove(route);
+        List<Route<RequestHandler>> toRemove = handlers.stream()
+                .filter(route -> route.uri.equalsIgnoreCase(url) && route.methods.contains(method))
+                .collect(Collectors.toList());
+        handlers.removeAll(toRemove);
         return this;
+    }
+
+    private <T> Set<T> toSet(T... values) {
+        return new HashSet<>(Arrays.asList(values));
     }
 
     private ExceptionHandler getDefaultExceptionHandler() {

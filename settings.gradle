@@ -9,6 +9,8 @@ include ':provider/netty'
 
 include ':examples/netty-json'
 
+include ':utils'
+
 rootProject.children.forEach {
     it.name = it.name.replace("/", "-")
     it.name = rootProject.name + "-" + it.name

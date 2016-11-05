@@ -6,6 +6,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import java.io.ByteArrayOutputStream;
+
 public class JsonBodyWriter implements BodyWriter {
 
     private final ObjectMapper objectMapper;
@@ -20,13 +22,15 @@ public class JsonBodyWriter implements BodyWriter {
     }
 
     @Override
-    public <T> String write(T body) {
-        String result = null;
+    public <T> byte[] write(T body) {
+        byte[] result = null;
 
         if (body != null) {
             try {
-                result = objectMapper.writeValueAsString(body);
-            } catch (JsonProcessingException e) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                objectMapper.writeValue(out, body);
+                result = out.toByteArray();
+            } catch (Exception e) {
                 ExceptionUtils.throwRuntimeException(e);
             }
         }

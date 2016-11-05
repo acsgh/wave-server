@@ -2,15 +2,18 @@ package com.acs.waveserver.examples;
 
 import com.acs.waveserver.converter.json.JsonBodyReader;
 import com.acs.waveserver.converter.json.JsonBodyWriter;
-import com.acs.waveserver.converter.json.ObjectMapperProvider;
+import com.acs.waveserver.converter.json.json.ObjectMapperProvider;
 import com.acs.waveserver.core.Router;
 import com.acs.waveserver.core.RouterBuilder;
 import com.acs.waveserver.core.constants.RequestMethod;
 import com.acs.waveserver.core.constants.ResponseStatus;
+import com.acs.waveserver.core.files.StaticFilesystemFolderFilter;
 import com.acs.waveserver.provider.common.NettyServer;
 import com.acs.waveserver.provider.common.NettyServerBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -30,7 +33,7 @@ public final class Boot {
 
     }
 
-    private static Router getRouter() {
+    private static Router getRouter() throws FileNotFoundException {
         Map<Long, Person> persons = new HashMap<>();
         AtomicLong ids = new AtomicLong(0);
 
@@ -39,16 +42,16 @@ public final class Boot {
             persons.put(id, new Person(id, "John Doe " + id, (int) (2 * id)));
         }
         RouterBuilder builder = new RouterBuilder();
-        ObjectMapper objectMapper = new ObjectMapperProvider().getObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapperProvider(true).getObjectMapper();
         JsonBodyWriter jsonBodyWriter = new JsonBodyWriter(objectMapper);
         JsonBodyReader<Person> jsonBodyReader = new JsonBodyReader<>(objectMapper, Person.class);
 
-        builder.handler("/persons", RequestMethod.GET, (request, responseBuilder) -> {
+        builder.handler("/persons", (request, responseBuilder) -> {
             responseBuilder.body(persons.values(), jsonBodyWriter);
             return Optional.of(responseBuilder.build());
-        });
+        }, RequestMethod.GET);
 
-        builder.handler("/persons", RequestMethod.POST, (request, responseBuilder) -> {
+        builder.handler("/persons", (request, responseBuilder) -> {
             Person person = request.body(jsonBodyReader);
 
             person = new Person(ids.addAndGet(1), person.getName(), person.getAge());
@@ -56,9 +59,9 @@ public final class Boot {
             responseBuilder.body(person.getId(), jsonBodyWriter);
             responseBuilder.status(ResponseStatus.CREATED);
             return Optional.of(responseBuilder.build());
-        });
+        }, RequestMethod.POST);
 
-        builder.handler("/persons/{id}", RequestMethod.PUT, (request, responseBuilder) -> {
+        builder.handler("/persons/{id}", (request, responseBuilder) -> {
             Person person = persons.get(request.pathParams().getMandatory("id", Long.class));
             Person personNew = request.body(jsonBodyReader);
 
@@ -70,9 +73,9 @@ public final class Boot {
             } else {
                 return Optional.of(responseBuilder.error(ResponseStatus.NOT_FOUND));
             }
-        });
+        }, RequestMethod.PUT);
 
-        builder.handler("/persons/{id}", RequestMethod.GET, (request, responseBuilder) -> {
+        builder.handler("/persons/{id}", (request, responseBuilder) -> {
             Person person = persons.get(request.pathParams().getMandatory("id", Long.class));
 
             if (person != null) {
@@ -81,9 +84,9 @@ public final class Boot {
             } else {
                 return Optional.of(responseBuilder.error(ResponseStatus.NOT_FOUND));
             }
-        });
+        }, RequestMethod.GET);
 
-        builder.handler("/persons/{id}", RequestMethod.DELETE, (request, responseBuilder) -> {
+        builder.handler("/persons/{id}", (request, responseBuilder) -> {
             Long id = request.pathParams().getMandatory("id", Long.class);
 
             if (persons.containsKey(id)) {
@@ -92,7 +95,9 @@ public final class Boot {
             } else {
                 return Optional.of(responseBuilder.error(ResponseStatus.NOT_FOUND));
             }
-        });
+        }, RequestMethod.DELETE);
+
+        builder.filter("/*", new StaticFilesystemFolderFilter(new File("public"), true));
         return builder.build();
     }
 }

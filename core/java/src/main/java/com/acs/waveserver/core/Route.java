@@ -1,15 +1,22 @@
 package com.acs.waveserver.core;
 
 import com.acs.waveserver.core.constants.RequestMethod;
+import com.acs.waveserver.core.utils.CheckUtils;
+
+import java.util.Set;
 
 class Route<T> {
     final String uri;
-    final RequestMethod method;
+    final Set<RequestMethod> methods;
     final T handler;
 
-    Route(String uri, RequestMethod method, T handler) {
+    Route(String uri, Set<RequestMethod> methods, T handler) {
+        CheckUtils.checkString("uri", uri);
+        CheckUtils.checkNull("method", methods);
+        CheckUtils.checkNull("handler", handler);
+
         this.uri = uri;
-        this.method = method;
+        this.methods = methods;
         this.handler = handler;
     }
 
@@ -21,26 +28,30 @@ class Route<T> {
         Route<?> route = (Route<?>) o;
 
         if (!uri.equals(route.uri)) return false;
-        return method == route.method;
+        return methods.equals(route.methods);
 
     }
 
     @Override
     public int hashCode() {
         int result = uri.hashCode();
-        result = 31 * result + method.hashCode();
+        result = 31 * result + methods.hashCode();
         return result;
     }
 
     boolean canApply(HTTPRequest httpRequest) {
-        return (httpRequest.method == method) && httpRequest.address.matchUrl(this.uri);
+        return validMethod(httpRequest) && httpRequest.address.matchUrl(this.uri);
+    }
+
+    private boolean validMethod(HTTPRequest httpRequest) {
+        return (methods.isEmpty()) || (methods.contains(httpRequest.method));
     }
 
     @Override
     public String toString() {
         return "Route{" +
                 "uri='" + uri + '\'' +
-                ", method=" + method +
+                ", methods=" + methods +
                 '}';
     }
 }

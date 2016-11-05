@@ -15,6 +15,6 @@ public interface BodyReader<T> {
         return new HashSet<>(Arrays.asList(values));
     }
 
-    T read(String body);
+    T read(byte[] body);
 
 }
