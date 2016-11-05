@@ -6,7 +6,7 @@ import com.acs.waveserver.core.functional.ErrorCodeHandler;
 import com.acs.waveserver.core.functional.ExceptionHandler;
 import com.acs.waveserver.core.functional.RequestFilter;
 import com.acs.waveserver.core.functional.RequestHandler;
-import com.acs.waveserver.core.utils.ExceptionUtils;
+import com.acs.waveserver.utils.ExceptionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;

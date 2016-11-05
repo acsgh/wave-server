@@ -1,7 +1,7 @@
 package com.acs.waveserver.core;
 
 import com.acs.waveserver.core.exception.ParameterNotFoundException;
-import com.acs.waveserver.core.utils.ValuesConverter;
+import com.acs.waveserver.utils.ValuesConverter;
 
 import java.util.*;
 import java.util.function.BiConsumer;

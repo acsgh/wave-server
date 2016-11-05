@@ -1,6 +1,6 @@
-package com.acs.waveserver.core.exception;
+package com.acs.waveserver.utils.exception;
 
-public class InvalidParameterFormatException extends ParameterException {
+public class InvalidParameterFormatException extends IllegalArgumentException {
     private static String getExceptionMessage(String key, String value, Class<?> parameterClass) {
         return "Parameter '" + key + "' with value '" + value + "' cannot be write to " + parameterClass.getName();
     }

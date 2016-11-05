@@ -2,14 +2,15 @@ package com.acs.waveserver.core;
 
 
 import com.acs.waveserver.core.constants.ResponseStatus;
+import com.acs.waveserver.utils.exception.InvalidParameterFormatException;
 import com.acs.waveserver.core.exception.ParameterException;
 import com.acs.waveserver.core.functional.ErrorCodeHandler;
 import com.acs.waveserver.core.functional.ExceptionHandler;
 import com.acs.waveserver.core.functional.RequestFilter;
 import com.acs.waveserver.core.functional.RequestHandler;
-import com.acs.waveserver.core.utils.CheckUtils;
-import com.acs.waveserver.core.utils.LogLevel;
-import com.acs.waveserver.core.utils.StopWatch;
+import com.acs.waveserver.utils.CheckUtils;
+import com.acs.waveserver.utils.LogLevel;
+import com.acs.waveserver.utils.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +53,7 @@ public class Router {
             return processFilters(httpRequest, responseBuilder)
                     .orElse(processHandler(httpRequest, responseBuilder)
                             .orElse(getErrorResponse(httpRequest, responseBuilder, ResponseStatus.NOT_FOUND)));
-        } catch (ParameterException e) {
+        } catch (ParameterException  | InvalidParameterFormatException e) {
             log.debug("Invalid Parameter", e);
             return getErrorResponse(httpRequest, responseBuilder, ResponseStatus.BAD_REQUEST);
         } catch (Exception e) {

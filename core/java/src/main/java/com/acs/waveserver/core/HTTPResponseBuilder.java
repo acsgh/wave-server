@@ -4,7 +4,7 @@ import com.acs.waveserver.core.constants.ProtocolVersion;
 import com.acs.waveserver.core.constants.RedirectStatus;
 import com.acs.waveserver.core.constants.ResponseStatus;
 import com.acs.waveserver.core.functional.BodyWriter;
-import com.acs.waveserver.core.utils.ExceptionUtils;
+import com.acs.waveserver.utils.ExceptionUtils;
 
 import java.util.Optional;
 

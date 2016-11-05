@@ -1,4 +1,4 @@
-package com.acs.waveserver.core.utils;
+package com.acs.waveserver.utils;
 
 import java.util.concurrent.TimeUnit;
 

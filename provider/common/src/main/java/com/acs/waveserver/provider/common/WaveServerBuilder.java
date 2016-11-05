@@ -1,7 +1,7 @@
 package com.acs.waveserver.provider.common;
 
 import com.acs.waveserver.core.Router;
-import com.acs.waveserver.core.utils.CheckUtils;
+import com.acs.waveserver.utils.CheckUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

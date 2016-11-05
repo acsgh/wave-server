@@ -2,7 +2,7 @@ package com.acs.waveserver.converter.json;
 
 import com.acs.waveserver.core.exception.ParameterException;
 import com.acs.waveserver.core.functional.BodyReader;
-import com.acs.waveserver.core.utils.ExceptionUtils;
+import com.acs.waveserver.utils.ExceptionUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

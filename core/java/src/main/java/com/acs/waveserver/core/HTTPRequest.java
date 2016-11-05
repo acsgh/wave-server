@@ -4,7 +4,7 @@ import com.acs.waveserver.core.constants.ProtocolVersion;
 import com.acs.waveserver.core.constants.RequestMethod;
 import com.acs.waveserver.core.exception.UnexpectedContentTypeException;
 import com.acs.waveserver.core.functional.BodyReader;
-import com.acs.waveserver.core.utils.ExceptionUtils;
+import com.acs.waveserver.utils.ExceptionUtils;
 
 import java.util.Set;
 

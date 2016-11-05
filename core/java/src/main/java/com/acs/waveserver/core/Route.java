@@ -1,7 +1,7 @@
 package com.acs.waveserver.core;
 
 import com.acs.waveserver.core.constants.RequestMethod;
-import com.acs.waveserver.core.utils.CheckUtils;
+import com.acs.waveserver.utils.CheckUtils;
 
 import java.util.Set;
 

@@ -1,10 +1,8 @@
 package com.acs.waveserver.converter.json;
 
 import com.acs.waveserver.core.functional.BodyWriter;
-import com.acs.waveserver.core.utils.ExceptionUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.acs.waveserver.utils.ExceptionUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.io.ByteArrayOutputStream;
 

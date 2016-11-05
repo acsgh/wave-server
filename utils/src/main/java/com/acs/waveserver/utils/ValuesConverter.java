@@ -1,7 +1,7 @@
-package com.acs.waveserver.core.utils;
+package com.acs.waveserver.utils;
 
 
-import com.acs.waveserver.core.exception.InvalidParameterFormatException;
+import com.acs.waveserver.utils.exception.InvalidParameterFormatException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
