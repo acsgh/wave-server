@@ -17,8 +17,8 @@ public class StaticClasspathFolderFilter extends FileFilter {
     }
 
     public Optional<FileInfo> getFileInfo(String fileName) {
-        String file = baseFolder +  addTradingSlash(fileName);
-log.info("Rear url: {}", file);
+        String file = baseFolder + addTradingSlash(fileName);
+
         URL url = Thread.currentThread().getContextClassLoader().getResource(file);
 
         Optional<FileInfo> result = Optional.empty();

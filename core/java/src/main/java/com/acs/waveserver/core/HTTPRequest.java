@@ -62,6 +62,11 @@ public class HTTPRequest extends HTTPItem {
         return (contentTypes.isEmpty()) || (contentTypes.stream().anyMatch(type -> type.equalsIgnoreCase(contentType)));
     }
 
+
+    HTTPRequest ofUri(String uri) {
+        return new HTTPRequest(method, HTTPAddress.build(uri), protocolVersion, headers, body);
+    }
+
     HTTPRequest ofRoute(Route<?> route) {
         return new HTTPRequest(method, address.ofRoute(route.uri), protocolVersion, headers, body);
     }

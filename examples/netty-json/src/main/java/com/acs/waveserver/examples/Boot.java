@@ -8,12 +8,10 @@ import com.acs.waveserver.core.RouterBuilder;
 import com.acs.waveserver.core.constants.RequestMethod;
 import com.acs.waveserver.core.constants.ResponseStatus;
 import com.acs.waveserver.core.files.StaticClasspathFolderFilter;
-import com.acs.waveserver.core.files.StaticFilesystemFolderFilter;
 import com.acs.waveserver.provider.common.NettyServer;
 import com.acs.waveserver.provider.common.NettyServerBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
@@ -100,6 +98,7 @@ public final class Boot {
 
         builder.filter("/*", new StaticClasspathFolderFilter("public", true));
         builder.filter("/webjars/{path+}", new StaticClasspathFolderFilter("META-INF/resources/webjars", true));
+        builder.handler("/", (request, responseBuilder) -> responseBuilder.serveOption("/index.html"));
         return builder.build();
     }
 }
