@@ -98,7 +98,7 @@ public final class Boot {
             }
         }, RequestMethod.DELETE);
 
-//        builder.filter("/*", new StaticClasspathFolderFilter("public", true));
+        builder.filter("/*", new StaticClasspathFolderFilter("public", true));
         builder.filter("/webjars/{path+}", new StaticClasspathFolderFilter("META-INF/resources/webjars", true));
         return builder.build();
     }
