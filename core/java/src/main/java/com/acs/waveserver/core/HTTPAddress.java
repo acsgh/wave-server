@@ -108,14 +108,14 @@ public class HTTPAddress {
 
     private String getPattern(String routeUri) {
         String pattern = routeUri.replaceAll("\\*", ".*");
-        pattern = pattern.replaceAll("\\{[a-zA-Z0-9%.&&[^/{}+]]*\\}", "([a-zA-Z0-9+%.&&[^/{}]]*)");
-        pattern = pattern.replaceAll("\\{[a-zA-Z0-9+%.&&[^/{}]]*\\+\\}", "([a-zA-Z0-9+%./&&[^{}]]*)");
+        pattern = pattern.replaceAll("\\{[^/{}+]*\\}", "([^/{}]*)");
+        pattern = pattern.replaceAll("\\{[^/{}]*\\+\\}", "([^{}]*)");
         return pattern;
     }
 
     private List<String> getParamNames(String routeUri) {
         List<String> names = new ArrayList<>();
-        Pattern pattern = Pattern.compile("(\\{[a-zA-Z0-9+%&&[^/{}]]*\\})");
+        Pattern pattern = Pattern.compile("(\\{[^/{}]*\\})");
         Matcher matcher = pattern.matcher(routeUri);
         while (matcher.find()) {
             names.add(matcher.group().replace("{", "").replace("+}", "").replace("}", ""));
