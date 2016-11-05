@@ -91,4 +91,16 @@ public class HttpAddressTest {
         assertEquals("dummy", param.getMandatory("action", String.class));
         assertEquals("etc/host/dummy.txt", param.getMandatory("path", String.class));
     }
+
+    @Test
+    public void web_jars_route() {
+        String routeUri = "/webjars/{path+}";
+        String requestUri = "/webjars/bootstrap/3.3.7-1/css/bootstrap.css";
+        HTTPAddress address = HTTPAddress.build(requestUri).ofRoute(routeUri);
+        assertTrue(address.matchUrl(routeUri));
+
+        HTTPParams param = address.pathParams;
+        assertEquals(1, param.keySet().size());
+        assertEquals("bootstrap/3.3.7-1/css/bootstrap.css", param.getMandatory("path", String.class));
+    }
 }

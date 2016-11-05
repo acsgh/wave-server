@@ -1,7 +1,5 @@
 package com.acs.waveserver.core.files;
 
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,10 +24,9 @@ public class StaticFilesystemFolderFilter extends FileFilter {
 
     public Optional<FileInfo> getFileInfo(String fileName) {
         File file = new File(baseFolder, fileName);
-        log.info("Final url: {}", file);
 
         Optional<FileInfo> result = Optional.empty();
-        if (file.exists()) {
+        if (file.exists() && !file.isDirectory()) {
             Supplier<byte[]> contentSupplier = () -> loadFileContent(file);
             result = Optional.of(new FileInfo(getContentType(fileName), getEtag(contentSupplier.get()), getLastModified(file), contentSupplier));
         }
@@ -38,15 +35,7 @@ public class StaticFilesystemFolderFilter extends FileFilter {
 
     private byte[] loadFileContent(File file) {
         try (FileInputStream input = new FileInputStream(file)) {
-            ByteOutputStream out = new ByteOutputStream();
-
-            byte[] buffer = new byte[1024];
-            int read;
-
-            while ((read = input.read(buffer)) > -1) {
-                out.write(buffer, 0, read);
-            }
-            return out.getBytes();
+            return getBytes(input);
         } catch (Exception e) {
             log.info("Unable to read file", e);
             return new byte[0];

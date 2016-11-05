@@ -7,6 +7,7 @@ import com.acs.waveserver.core.Router;
 import com.acs.waveserver.core.RouterBuilder;
 import com.acs.waveserver.core.constants.RequestMethod;
 import com.acs.waveserver.core.constants.ResponseStatus;
+import com.acs.waveserver.core.files.StaticClasspathFolderFilter;
 import com.acs.waveserver.core.files.StaticFilesystemFolderFilter;
 import com.acs.waveserver.provider.common.NettyServer;
 import com.acs.waveserver.provider.common.NettyServerBuilder;
@@ -97,7 +98,8 @@ public final class Boot {
             }
         }, RequestMethod.DELETE);
 
-        builder.filter("/*", new StaticFilesystemFolderFilter(new File("public"), true));
+//        builder.filter("/*", new StaticClasspathFolderFilter("public", true));
+        builder.filter("/webjars/{path+}", new StaticClasspathFolderFilter("META-INF/resources/webjars", true));
         return builder.build();
     }
 }

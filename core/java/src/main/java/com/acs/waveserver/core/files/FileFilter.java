@@ -7,9 +7,12 @@ import com.acs.waveserver.core.constants.ResponseStatus;
 import com.acs.waveserver.core.functional.RequestFilter;
 import com.acs.waveserver.utils.cache.CacheMap;
 import com.acs.waveserver.utils.cache.CacheMapBuilder;
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.URLConnection;
 import java.security.MessageDigest;
@@ -61,14 +64,40 @@ abstract class FileFilter implements RequestFilter {
             }
 
         }
-        return Optional.empty();
-    }
-
-    private String getUri(HTTPRequest request) {
-        return request.uri();
+        return nextJump.get();
     }
 
     protected abstract Optional<FileInfo> getFileInfo(String uri);
+
+    protected String addTradingSlash(String uri) {
+        String result = uri;
+
+        if (!uri.startsWith("/")) {
+            result = "/" + uri;
+        }
+
+        return result;
+    }
+
+    protected String removeTradingSlash(String uri) {
+        String result = uri;
+
+        if ((uri.length() > 1) && uri.startsWith("/")) {
+            result = uri.substring(1);
+        }
+
+        return result;
+    }
+
+    protected String removeEndingSlash(String uri) {
+        String result = uri;
+
+        if ((uri.length() > 1) && uri.endsWith("/")) {
+            result = uri.substring(0, uri.length() - 1);
+        }
+
+        return result;
+    }
 
 
     protected String getEtag(byte[] bytes) {
@@ -88,23 +117,6 @@ abstract class FileFilter implements RequestFilter {
         return result;
     }
 
-//    private boolean serverFreshContent(HTTPRequest request, Date lastModifiedFile) {
-//        Optional<String> lastModifiedHeader = request.headers.getSingle("If-Modified-Since", String.class);
-//
-//        boolean result = true;
-//
-//        if (lastModifiedHeader.isPresent()) {
-//            try {
-//                Date lastModifiedClient = DATE_FORMATTER.parse(lastModifiedHeader.get());
-//                result = lastModifiedFile.after(lastModifiedClient);
-//            } catch (Exception e) {
-//                log.trace("Unable to parse last modified exception", e);
-//            }
-//        }
-//
-//        return result;
-//    }
-
     protected String getContentType(String filename) {
         String result = URLConnection.guessContentTypeFromName(filename);
 
@@ -114,6 +126,30 @@ abstract class FileFilter implements RequestFilter {
             result = "text/css";
         }
 
+        if (result == null) {
+            result = "text/html";
+        }
+
         return result;
+    }
+
+    protected byte[] getBytes(InputStream input) throws IOException {
+        ByteOutputStream out = new ByteOutputStream();
+
+        byte[] buffer = new byte[1024];
+        int read;
+
+        while ((read = input.read(buffer)) > -1) {
+            out.write(buffer, 0, read);
+        }
+        return out.getBytes();
+    }
+
+    private String getUri(HTTPRequest request) {
+        return request.pathParams()
+                .get("path", String.class)
+                .map(this::addTradingSlash)
+                .map(this::removeEndingSlash)
+                .orElse(request.uri());
     }
 }

@@ -9,22 +9,22 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class FileInfo {
+class FileInfo {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public final String contentType;
-    public final String etag;
-    public final Date lastModified;
+    final String contentType;
+    final String etag;
+    final Date lastModified;
     private final Supplier<byte[]> contentSupplier;
 
-    public FileInfo(String contentType, String etag, Date lastModified, Supplier<byte[]> contentSupplier) {
+    FileInfo(String contentType, String etag, Date lastModified, Supplier<byte[]> contentSupplier) {
         this.contentType = contentType;
         this.etag = etag;
         this.lastModified = lastModified;
         this.contentSupplier = contentSupplier;
     }
 
-    public boolean isModified(HTTPHeaders headers) {
+    boolean isModified(HTTPHeaders headers) {
         boolean result;
 
         Optional<String> expectedEtag = headers.getSingle("If-None-Match", String.class);
@@ -52,9 +52,7 @@ public class FileInfo {
         return result;
     }
 
-    public byte[] content() {
+    byte[] content() {
         return contentSupplier.get();
     }
-
-
 }
