@@ -1,6 +1,6 @@
 rootProject.name = 'wave-server'
 
-include ':core/java'
+include ':router'
 
 include ':converter/json'
 

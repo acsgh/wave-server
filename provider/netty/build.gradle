@@ -1,5 +1,5 @@
 dependencies {
-    compile project(":wave-server-core-java")
+    compile project(":wave-server-router")
     compile project(":wave-server-provider-common")
 
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
