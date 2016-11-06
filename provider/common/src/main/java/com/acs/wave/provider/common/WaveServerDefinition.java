@@ -4,8 +4,6 @@ import com.acs.wave.router.Router;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 public abstract class WaveServerDefinition<SSLContext> {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -22,5 +20,13 @@ public abstract class WaveServerDefinition<SSLContext> {
         this.httpsPort = httpsPort;
         this.sslContext = sslContext;
         this.router = router;
+    }
+
+    public boolean hasHTTP() {
+        return (httpPort != null);
+    }
+
+    public boolean hasHTTPS() {
+        return (httpsPort != null) && (sslContext != null);
     }
 }

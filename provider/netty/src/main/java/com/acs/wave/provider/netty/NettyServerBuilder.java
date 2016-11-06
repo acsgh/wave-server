@@ -7,7 +7,7 @@ import io.netty.handler.ssl.util.SelfSignedCertificate;
 
 public final class NettyServerBuilder extends WaveServerBuilder<NettyServer> {
 
-    protected SslContext sslContext = getDefaultSSLContext();
+    private SslContext sslContext = getDefaultSSLContext();
 
     @Override
     public NettyServer buildInstance() {

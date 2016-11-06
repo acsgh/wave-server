@@ -14,12 +14,12 @@ public final class NettyServer extends WaveServer<NettyServerDefinition> {
 
     @Override
     protected void startServer() throws Exception {
-        if (definition.httpPort != null) {
+        if (definition.hasHTTP()) {
             httpServer = new NettyServerChannel(definition.host, definition.httpPort, null, definition.router);
             httpServer.start();
         }
 
-        if ((definition.httpsPort != null) && (definition.sslContext != null)) {
+        if (definition.hasHTTPS()) {
             httpsServer = new NettyServerChannel(definition.host, definition.httpsPort, definition.sslContext, definition.router);
             httpsServer.start();
         }

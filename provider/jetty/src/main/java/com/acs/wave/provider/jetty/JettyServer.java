@@ -1,48 +1,62 @@
 package com.acs.wave.provider.jetty;
 
-import com.acs.wave.router.Router;
 import com.acs.wave.provider.common.WaveServer;
 import com.acs.wave.provider.common.WaveServerServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import spark.ssl.SslStores;
 
 import java.util.concurrent.TimeUnit;
 
-public final class JettyServer extends WaveServer {
-
+public final class JettyServer extends WaveServer<JettyServerDefinition> {
 
     private Server server;
 
-    JettyServer(String host, Integer httpPort, Integer httpsPort, Router router) {
-        super(host, httpPort, httpsPort, router);
+    JettyServer(JettyServerDefinition definition) {
+        super(definition);
     }
+
 
     @Override
     protected void startServer() throws Exception {
-        server = create(0,0,0);
-        ServerConnector connector = new ServerConnector(server);
-        connector.setIdleTimeout(TimeUnit.HOURS.toMillis(1));
-        connector.setSoLingerTime(-1);
-        connector.setHost(host);
-        connector.setPort(httpPort);
-        server.addConnector(connector);
-        WaveServerServlet sevlet = new WaveServerServlet(router);
-        server.setHandler(new JettyHandler(sevlet));
-        server.start();
-        if (httpPort != null) {
+        server = createServer();
+        WaveServerServlet servlet = new WaveServerServlet(definition.router);
+        server.setHandler(new JettyHandler(servlet));
+        if (definition.hasHTTP()) {
+            server.addConnector(getServerConnector());
         }
-        if (httpsPort != null) {
+        if (definition.hasHTTPS()) {
+            server.addConnector(getSecureServerConnector());
+        }
+        server.start();
+    }
+
+    @Override
+    protected void stopServer() throws Exception {
+        if (server != null) {
+            server.stop();
         }
     }
 
-    public static Server create(int maxThreads, int minThreads, int threadTimeoutMillis) {
+
+    private ServerConnector getServerConnector() {
+        ServerConnector connector = new ServerConnector(server);
+        connector.setIdleTimeout(TimeUnit.HOURS.toMillis(1));
+        connector.setSoLingerTime(definition.soLingerTime);
+        connector.setHost(definition.host);
+        connector.setPort(definition.httpPort);
+        return connector;
+    }
+
+    private Server createServer() {
         Server server;
 
-        if (maxThreads > 0) {
-            int max = (maxThreads > 0) ? maxThreads : 200;
-            int min = (minThreads > 0) ? minThreads : 8;
-            int idleTimeout = (threadTimeoutMillis > 0) ? threadTimeoutMillis : 60000;
+        if (definition.maxThreads > 0) {
+            int max = (definition.maxThreads > 0) ? definition.maxThreads : 200;
+            int min = (definition.minThreads > 0) ? definition.minThreads : 8;
+            int idleTimeout = (definition.threadTimeoutMillis > 0) ? definition.threadTimeoutMillis : 60000;
 
             server = new Server(new QueuedThreadPool(max, min, idleTimeout));
         } else {
@@ -52,10 +66,28 @@ public final class JettyServer extends WaveServer {
         return server;
     }
 
-    @Override
-    protected void stopServer() throws Exception {
-        if (server != null) {
-            server.stop();
+    private ServerConnector getSecureServerConnector() {
+        SslStores sslStores = definition.sslContext;
+
+        SslContextFactory sslContextFactory = new SslContextFactory(sslStores.keystoreFile());
+
+        if (sslStores.keystorePassword() != null) {
+            sslContextFactory.setKeyStorePassword(sslStores.keystorePassword());
         }
+
+        if (sslStores.trustStoreFile() != null) {
+            sslContextFactory.setTrustStorePath(sslStores.trustStoreFile());
+        }
+
+        if (sslStores.trustStorePassword() != null) {
+            sslContextFactory.setTrustStorePassword(sslStores.trustStorePassword());
+        }
+
+        ServerConnector connector = new ServerConnector(server, sslContextFactory);
+        connector.setIdleTimeout(TimeUnit.HOURS.toMillis(1));
+        connector.setSoLingerTime(definition.soLingerTime);
+        connector.setHost(definition.host);
+        connector.setPort(definition.httpsPort);
+        return connector;
     }
 }
