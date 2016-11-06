@@ -23,12 +23,12 @@ public final class Boot {
     public static void main(String[] args) throws Exception {
         Router router = getRouter();
 
-        JettyServer nettyServer = new JettyServerBuilder()
+        JettyServer jettyServer = new JettyServerBuilder()
                 .router(router)
                 .build();
 
-        nettyServer.start();
-        Runtime.getRuntime().addShutdownHook(new Thread(nettyServer::stop));
+        jettyServer.start();
+        Runtime.getRuntime().addShutdownHook(new Thread(jettyServer::stop));
 
     }
 
