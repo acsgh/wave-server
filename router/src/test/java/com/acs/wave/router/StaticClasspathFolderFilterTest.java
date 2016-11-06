@@ -1,6 +1,5 @@
 package com.acs.wave.router;
 
-import com.acs.wave.core.*;
 import com.acs.wave.router.constants.ProtocolVersion;
 import com.acs.wave.router.constants.RequestMethod;
 import com.acs.wave.router.files.StaticClasspathFolderFilter;
@@ -17,8 +16,9 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
 
 @RunWith(PowerMockRunner.class)
 public class StaticClasspathFolderFilterTest {
