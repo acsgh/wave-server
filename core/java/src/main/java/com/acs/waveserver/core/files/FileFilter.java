@@ -7,10 +7,10 @@ import com.acs.waveserver.core.constants.ResponseStatus;
 import com.acs.waveserver.core.functional.RequestFilter;
 import com.acs.waveserver.utils.cache.CacheMap;
 import com.acs.waveserver.utils.cache.CacheMapBuilder;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -134,7 +134,7 @@ abstract class FileFilter implements RequestFilter {
     }
 
     protected byte[] getBytes(InputStream input) throws IOException {
-        ByteOutputStream out = new ByteOutputStream();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         byte[] buffer = new byte[1024];
         int read;
@@ -142,7 +142,7 @@ abstract class FileFilter implements RequestFilter {
         while ((read = input.read(buffer)) > -1) {
             out.write(buffer, 0, read);
         }
-        return out.getBytes();
+        return out.toByteArray();
     }
 
     private String getUri(HTTPRequest request) {
