@@ -6,8 +6,11 @@ include ':converter/json'
 
 include ':provider/common'
 include ':provider/netty'
+include ':provider/jetty'
+include ':provider/sevlet'
 
 include ':examples/netty-json'
+include ':examples/jetty-json'
 
 include ':utils'
 

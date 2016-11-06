@@ -1,0 +1,18 @@
+dependencies {
+    compile project(":wave-server-core-java")
+    compile project(":wave-server-provider-common")
+    compile project(":wave-server-provider-sevlet")
+
+    compile group: 'com.sparkjava', name: 'spark-core', version: '2.5'
+    compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.3.14.v20161028'
+    compile group: 'org.eclipse.jetty', name: 'jetty-webapp', version: '9.3.14.v20161028'
+    compile group: 'org.eclipse.jetty.websocket', name: 'websocket-server', version: '9.3.13.v20161014'
+    compile group: 'org.eclipse.jetty.websocket', name: 'websocket-servlet', version: '9.3.6.v20151106'
+
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.7'
+
+    testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.7'
+    testCompile group: 'org.powermock', name: 'powermock-module-junit4', version: '1.6.5'
+    testCompile group: 'org.powermock', name: 'powermock-api-mockito', version: '1.6.5'
+}
+

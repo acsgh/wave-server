@@ -8,8 +8,8 @@ import com.acs.waveserver.core.RouterBuilder;
 import com.acs.waveserver.core.constants.RequestMethod;
 import com.acs.waveserver.core.constants.ResponseStatus;
 import com.acs.waveserver.core.files.StaticClasspathFolderFilter;
-import com.acs.waveserver.provider.netty.NettyServer;
-import com.acs.waveserver.provider.netty.NettyServerBuilder;
+import com.acs.waveserver.provider.jetty.JettyServer;
+import com.acs.waveserver.provider.jetty.JettyServerBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.FileNotFoundException;
@@ -23,7 +23,7 @@ public final class Boot {
     public static void main(String[] args) throws Exception {
         Router router = getRouter();
 
-        NettyServer nettyServer = new NettyServerBuilder()
+        JettyServer nettyServer = new JettyServerBuilder()
                 .router(router)
                 .build();
 

@@ -1,4 +1,4 @@
-package com.acs.waveserver.provider.common;
+package com.acs.waveserver.provider.netty;
 
 import com.acs.waveserver.core.Router;
 import io.netty.channel.ChannelInitializer;

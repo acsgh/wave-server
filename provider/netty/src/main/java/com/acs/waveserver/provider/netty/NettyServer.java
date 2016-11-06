@@ -1,6 +1,7 @@
-package com.acs.waveserver.provider.common;
+package com.acs.waveserver.provider.netty;
 
 import com.acs.waveserver.core.Router;
+import com.acs.waveserver.provider.common.WaveServer;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
