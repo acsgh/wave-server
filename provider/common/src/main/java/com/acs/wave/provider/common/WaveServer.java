@@ -1,27 +1,20 @@
 package com.acs.wave.provider.common;
 
-import com.acs.wave.router.Router;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class WaveServer {
+public abstract class WaveServer<T extends WaveServerDefinition> {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    protected final String host;
-    protected final Integer httpPort;
-    protected final Integer httpsPort;
-    protected final Router router;
+    protected final T definition;
 
     private final AtomicBoolean started = new AtomicBoolean(false);
 
-    protected WaveServer(String host, Integer httpPort, Integer httpsPort, Router router) {
-        this.host = host;
-        this.httpPort = httpPort;
-        this.httpsPort = httpsPort;
-        this.router = router;
+    protected WaveServer(T definition) {
+        this.definition = definition;
     }
 
     public void start() throws Exception {
@@ -29,7 +22,6 @@ public abstract class WaveServer {
             startServer();
         }
     }
-
 
     public void stop() {
         if (started.compareAndSet(true, false)) {

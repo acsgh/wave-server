@@ -1,32 +1,26 @@
 package com.acs.wave.provider.netty;
 
-import com.acs.wave.router.Router;
 import com.acs.wave.provider.common.WaveServer;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.handler.ssl.util.SelfSignedCertificate;
 
-import javax.net.ssl.SSLException;
-import java.security.cert.CertificateException;
-
-public final class NettyServer extends WaveServer {
+public final class NettyServer extends WaveServer<NettyServerDefinition> {
 
 
     private NettyServerChannel httpServer;
     private NettyServerChannel httpsServer;
 
-    NettyServer(String host, Integer httpPort, Integer httpsPort, Router router) {
-        super(host, httpPort, httpsPort, router);
+    NettyServer(NettyServerDefinition definition) {
+        super(definition);
     }
 
     @Override
     protected void startServer() throws Exception {
-        if (httpPort != null) {
-            httpServer = new NettyServerChannel(host, httpPort, null, router);
+        if (definition.httpPort != null) {
+            httpServer = new NettyServerChannel(definition.host, definition.httpPort, null, definition.router);
             httpServer.start();
         }
-        if (httpsPort != null) {
-            httpsServer = new NettyServerChannel(host, httpsPort, getSSLContext(), router);
+
+        if ((definition.httpsPort != null) && (definition.sslContext != null)) {
+            httpsServer = new NettyServerChannel(definition.host, definition.httpsPort, definition.sslContext, definition.router);
             httpsServer.start();
         }
     }
@@ -39,10 +33,5 @@ public final class NettyServer extends WaveServer {
         if (httpsServer != null) {
             httpsServer.stop();
         }
-    }
-
-    private SslContext getSSLContext() throws SSLException, CertificateException {
-        SelfSignedCertificate ssc = new SelfSignedCertificate();
-        return SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey()).build();
     }
 }
