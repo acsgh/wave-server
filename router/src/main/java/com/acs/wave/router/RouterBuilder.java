@@ -46,6 +46,79 @@ public class RouterBuilder {
         return this;
     }
 
+
+    public RouterBuilder options(String url, RequestFilter filter) {
+        return filter(url, filter, RequestMethod.OPTIONS);
+    }
+    
+    public RouterBuilder options(String url, RequestHandler handler) {
+        return handler(url, handler, RequestMethod.OPTIONS);
+    }
+    
+    public RouterBuilder get(String url, RequestFilter filter) {
+        return filter(url, filter, RequestMethod.GET);
+    }
+    
+    public RouterBuilder get(String url, RequestHandler handler) {
+        return handler(url, handler, RequestMethod.GET);
+    }
+    
+    public RouterBuilder head(String url, RequestFilter filter) {
+        return filter(url, filter, RequestMethod.HEAD);
+    }
+    
+    public RouterBuilder head(String url, RequestHandler handler) {
+        return handler(url, handler, RequestMethod.HEAD);
+    }
+
+    public RouterBuilder post(String url, RequestFilter filter) {
+        return filter(url, filter, RequestMethod.POST);
+    }
+
+    public RouterBuilder post(String url, RequestHandler handler) {
+        return handler(url, handler, RequestMethod.POST);
+    }
+
+    public RouterBuilder put(String url, RequestFilter filter) {
+        return filter(url, filter, RequestMethod.PUT);
+    }
+
+    public RouterBuilder put(String url, RequestHandler handler) {
+        return handler(url, handler, RequestMethod.PUT);
+    }
+
+    public RouterBuilder patch(String url, RequestFilter filter) {
+        return filter(url, filter, RequestMethod.PATCH);
+    }
+
+    public RouterBuilder patch(String url, RequestHandler handler) {
+        return handler(url, handler, RequestMethod.PATCH);
+    }
+
+    public RouterBuilder delete(String url, RequestFilter filter) {
+        return filter(url, filter, RequestMethod.DELETE);
+    }
+
+    public RouterBuilder delete(String url, RequestHandler handler) {
+        return handler(url, handler, RequestMethod.DELETE);
+    }
+
+    public RouterBuilder trace(String url, RequestFilter filter) {
+        return filter(url, filter, RequestMethod.TRACE);
+    }
+
+    public RouterBuilder trace(String url, RequestHandler handler) {
+        return handler(url, handler, RequestMethod.TRACE);
+    }
+
+    public RouterBuilder connect(String url, RequestFilter filter) {
+        return filter(url, filter, RequestMethod.CONNECT);
+    }
+
+    public RouterBuilder connect(String url, RequestHandler handler) {
+        return handler(url, handler, RequestMethod.CONNECT);
+    }
+
     public RouterBuilder filter(String url, RequestFilter filter, RequestMethod... methods) {
         Route<RequestFilter> route = new Route<>(url, toSet(methods), filter);
         filters.add(route);
