@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class WaveServer<T extends WaveServerDefinition> {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     protected final T definition;
 

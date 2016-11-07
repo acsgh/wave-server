@@ -2,12 +2,19 @@ package com.acs.wave.provider.jetty;
 
 import com.acs.wave.provider.common.WaveServer;
 import com.acs.wave.provider.common.WaveServerServlet;
+import org.eclipse.jetty.http.pathmap.ServletPathSpec;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.eclipse.jetty.websocket.server.WebSocketUpgradeFilter;
+import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
+import spark.embeddedserver.jetty.websocket.WebSocketCreatorFactory;
 import spark.ssl.SslStores;
 
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public final class JettyServer extends WaveServer<JettyServerDefinition> {
@@ -38,6 +45,27 @@ public final class JettyServer extends WaveServer<JettyServerDefinition> {
         if (server != null) {
             server.stop();
         }
+    }
+
+    public ServletContextHandler create(Map<String, Class<?>> webSocketHandlers, Optional<Integer> webSocketIdleTimeoutMillis) {
+        ServletContextHandler webSocketServletContextHandler = null;
+        if (webSocketHandlers != null) {
+            try {
+                webSocketServletContextHandler = new ServletContextHandler(null, "/", true, false);
+                WebSocketUpgradeFilter webSocketUpgradeFilter = WebSocketUpgradeFilter.configureContext(webSocketServletContextHandler);
+                if (webSocketIdleTimeoutMillis.isPresent()) {
+                    webSocketUpgradeFilter.getFactory().getPolicy().setIdleTimeout(webSocketIdleTimeoutMillis.get());
+                }
+                for (String path : webSocketHandlers.keySet()) {
+                    WebSocketCreator webSocketCreator = WebSocketCreatorFactory.create(webSocketHandlers.get(path));
+                    webSocketUpgradeFilter.addMapping(new ServletPathSpec(path), webSocketCreator);
+                }
+            } catch (Exception ex) {
+                log.error("creation of websocket context handler failed.", ex);
+                webSocketServletContextHandler = null;
+            }
+        }
+        return webSocketServletContextHandler;
     }
 
 

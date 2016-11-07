@@ -1,16 +1,16 @@
 package com.acs.wave.router;
 
 
-import com.acs.wave.router.functional.RequestHandler;
 import com.acs.wave.router.constants.ResponseStatus;
-import com.acs.wave.utils.exception.InvalidParameterFormatException;
 import com.acs.wave.router.exception.ParameterException;
 import com.acs.wave.router.functional.ErrorCodeHandler;
 import com.acs.wave.router.functional.ExceptionHandler;
 import com.acs.wave.router.functional.RequestFilter;
+import com.acs.wave.router.functional.RequestHandler;
 import com.acs.wave.utils.CheckUtils;
 import com.acs.wave.utils.LogLevel;
 import com.acs.wave.utils.StopWatch;
+import com.acs.wave.utils.exception.InvalidParameterFormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,13 +23,13 @@ import java.util.stream.Collectors;
 
 public class Router {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    public final List<Route<RequestFilter>> filters;
-    public final List<Route<RequestHandler>> handlers;
-    public final Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers;
-    public final ErrorCodeHandler defaultErrorCodeHandler;
-    public final ExceptionHandler exceptionHandler;
+    private final List<Route<RequestFilter>> filters;
+    private final List<Route<RequestHandler>> handlers;
+    private final Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers;
+    private final ErrorCodeHandler defaultErrorCodeHandler;
+    private final ExceptionHandler exceptionHandler;
 
     Router(List<Route<RequestFilter>> filters, List<Route<RequestHandler>> handlers, Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers, ErrorCodeHandler defaultErrorCodeHandler, ExceptionHandler exceptionHandler) {
         CheckUtils.checkNull("filters", filters);
@@ -53,7 +53,7 @@ public class Router {
             return processFilters(httpRequest, responseBuilder)
                     .orElse(processHandler(httpRequest, responseBuilder)
                             .orElse(getErrorResponse(httpRequest, responseBuilder, ResponseStatus.NOT_FOUND)));
-        } catch (ParameterException  | InvalidParameterFormatException e) {
+        } catch (ParameterException | InvalidParameterFormatException e) {
             log.debug("Invalid Parameter", e);
             return getErrorResponse(httpRequest, responseBuilder, ResponseStatus.BAD_REQUEST);
         } catch (Exception e) {

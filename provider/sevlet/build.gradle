@@ -1,5 +1,5 @@
 dependencies {
-    compile project(":wave-server-router")
+    compile project(":wave-server-router-http")
     compile project(":wave-server-provider-common")
 
     compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'

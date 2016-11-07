@@ -1,5 +1,5 @@
 dependencies {
-    compile project(":wave-server-router")
+    compile project(":wave-server-router-http")
     compile project(":wave-server-provider-common")
     compile project(":wave-server-provider-sevlet")
 

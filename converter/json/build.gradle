@@ -1,5 +1,5 @@
 dependencies {
-    compile project(":wave-server-router")
+    compile project(":wave-server-router-http")
 
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.4'
 

@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 
 public class RouterBuilder {
 
-    private final List<Route<RequestFilter>> filters = new ArrayList<>();
-    private final List<Route<RequestHandler>> handlers = new ArrayList<>();
-    private final Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers = new HashMap<>();
-    private ErrorCodeHandler defaultErrorCodeHandler;
-    private ExceptionHandler exceptionHandler;
+    protected final List<Route<RequestFilter>> filters = new ArrayList<>();
+    protected final List<Route<RequestHandler>> handlers = new ArrayList<>();
+    protected final Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers = new HashMap<>();
+    protected ErrorCodeHandler defaultErrorCodeHandler;
+    protected ExceptionHandler exceptionHandler;
 
     public RouterBuilder() {
         exceptionHandler(null);
@@ -50,23 +50,23 @@ public class RouterBuilder {
     public RouterBuilder options(String url, RequestFilter filter) {
         return filter(url, filter, RequestMethod.OPTIONS);
     }
-    
+
     public RouterBuilder options(String url, RequestHandler handler) {
         return handler(url, handler, RequestMethod.OPTIONS);
     }
-    
+
     public RouterBuilder get(String url, RequestFilter filter) {
         return filter(url, filter, RequestMethod.GET);
     }
-    
+
     public RouterBuilder get(String url, RequestHandler handler) {
         return handler(url, handler, RequestMethod.GET);
     }
-    
+
     public RouterBuilder head(String url, RequestFilter filter) {
         return filter(url, filter, RequestMethod.HEAD);
     }
-    
+
     public RouterBuilder head(String url, RequestHandler handler) {
         return handler(url, handler, RequestMethod.HEAD);
     }
