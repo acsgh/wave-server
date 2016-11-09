@@ -6,5 +6,5 @@ import com.acs.wave.router.websocket.response.WebSocketResponseBuilder;
 
 public interface WebSocketHandler {
 
-    WebSocketResponse process(WebSocketRequest request, WebSocketResponseBuilder responseBuilder);
+    WebSocketResponse handle(WebSocketRequest request, WebSocketResponseBuilder responseBuilder);
 }

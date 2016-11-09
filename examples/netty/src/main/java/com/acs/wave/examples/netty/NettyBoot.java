@@ -1,4 +1,4 @@
-package com.acs.wave.examples;
+package com.acs.wave.examples.netty;
 
 import com.acs.wave.converter.json.JsonBodyReader;
 import com.acs.wave.converter.json.JsonBodyWriter;
@@ -7,8 +7,11 @@ import com.acs.wave.provider.netty.NettyServer;
 import com.acs.wave.provider.netty.NettyServerBuilder;
 import com.acs.wave.router.HTTPRouter;
 import com.acs.wave.router.HTTPRouterBuilder;
+import com.acs.wave.router.WebSocketRouter;
+import com.acs.wave.router.WebSocketRouterBuilder;
 import com.acs.wave.router.constants.ResponseStatus;
 import com.acs.wave.router.files.StaticClasspathFolderFilter;
+import com.acs.wave.router.websocket.request.WebSocketRequestText;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.FileNotFoundException;
@@ -17,13 +20,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
-public final class Boot {
+public final class NettyBoot {
 
     public static void main(String[] args) throws Exception {
-        HTTPRouter httpRouter = getRouter();
-
         NettyServer nettyServer = new NettyServerBuilder()
-                .httpRouter(httpRouter)
+                .webSocketRouter(getWebSocketRouter())
+                .httpRouter(getHttpRouter())
                 .build();
 
         nettyServer.start();
@@ -31,7 +33,39 @@ public final class Boot {
 
     }
 
-    private static HTTPRouter getRouter() throws FileNotFoundException {
+    private static WebSocketRouter getWebSocketRouter() {
+        WebSocketRouterBuilder webSocketRouterBuilder = new WebSocketRouterBuilder();
+
+        webSocketRouterBuilder.webSocket("/echo", (request, responseBuilder) -> {
+            if (request instanceof WebSocketRequestText) {
+                return responseBuilder.text(((WebSocketRequestText) request).text).build();
+            } else {
+                return responseBuilder.build();
+            }
+        });
+
+        webSocketRouterBuilder.webSocket("/revert", (request, responseBuilder) -> {
+            if (request instanceof WebSocketRequestText) {
+                return responseBuilder.text(revert(((WebSocketRequestText) request).text)).build();
+            } else {
+                return responseBuilder.build();
+            }
+        });
+
+        return webSocketRouterBuilder.build();
+    }
+
+    private static String revert(String text) {
+        String result = "";
+
+        for (int i = 0; i < text.length(); i++) {
+            result += text.charAt(text.length() - i - 1);
+        }
+
+        return result;
+    }
+
+    private static HTTPRouter getHttpRouter() throws FileNotFoundException {
         Map<Long, Person> persons = new HashMap<>();
         AtomicLong ids = new AtomicLong(0);
 
