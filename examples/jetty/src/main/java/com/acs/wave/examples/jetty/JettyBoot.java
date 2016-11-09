@@ -1,4 +1,4 @@
-package com.acs.wave.examples;
+package com.acs.wave.examples.jetty;
 
 import com.acs.wave.converter.json.JsonBodyReader;
 import com.acs.wave.converter.json.JsonBodyWriter;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
-public final class Boot {
+public final class JettyBoot {
 
     public static void main(String[] args) throws Exception {
         HTTPRouter httpRouter = getRouter();

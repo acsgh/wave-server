@@ -1,4 +1,4 @@
-package com.acs.wave.examples;
+package com.acs.wave.examples.jetty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
