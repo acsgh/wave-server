@@ -1,6 +1,8 @@
 package com.acs.wave.provider.jetty;
 
 import com.acs.wave.provider.common.WaveServerBuilder;
+import com.acs.wave.router.HTTPRouter;
+import com.acs.wave.router.WebSocketRouter;
 import spark.ssl.SslStores;
 
 public final class JettyServerBuilder extends WaveServerBuilder<JettyServer> {
@@ -13,13 +15,19 @@ public final class JettyServerBuilder extends WaveServerBuilder<JettyServer> {
     private int threadTimeoutMillis = DEFAULT_VALUE;
     private int soLingerTime = DEFAULT_VALUE;
 
+    protected WebSocketRouter webSocketRouter;
+
 
     @Override
     public JettyServer buildInstance() {
-        JettyServerDefinition definition = new JettyServerDefinition(host, httpPort, httpsPort, sslStores, router, maxThreads, minThreads, threadTimeoutMillis, soLingerTime);
+        JettyServerDefinition definition = new JettyServerDefinition(host, httpPort, httpsPort, sslStores, httpRouter, maxThreads, minThreads, threadTimeoutMillis, soLingerTime, webSocketRouter);
         return new JettyServer(definition);
     }
 
+    public JettyServerBuilder webSocketRouter(WebSocketRouter webSocketRouter) {
+        this.webSocketRouter = webSocketRouter;
+        return this;
+    }
 
     public JettyServerBuilder maxThreads(int maxThreads) {
         this.maxThreads = maxThreads;

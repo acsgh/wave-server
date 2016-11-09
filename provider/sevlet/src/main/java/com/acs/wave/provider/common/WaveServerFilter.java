@@ -1,7 +1,7 @@
 package com.acs.wave.provider.common;
 
 import com.acs.wave.router.HTTPResponse;
-import com.acs.wave.router.Router;
+import com.acs.wave.router.HTTPRouter;
 import com.acs.wave.router.constants.ResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +15,10 @@ public class WaveServerFilter implements Filter {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final Router router;
+    private final HTTPRouter httpRouter;
 
-    public WaveServerFilter(Router router) {
-        this.router = router;
+    public WaveServerFilter(HTTPRouter httpRouter) {
+        this.httpRouter = httpRouter;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class WaveServerFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HTTPResponse waveResponse = router.process(ServletUtils.toWaveRequest((HttpServletRequest) request));
+        HTTPResponse waveResponse = httpRouter.process(ServletUtils.toWaveRequest((HttpServletRequest) request));
 
         if (waveResponse.responseStatus != ResponseStatus.NOT_FOUND) {
             ServletUtils.transferParams(waveResponse, (HttpServletResponse) response);

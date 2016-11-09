@@ -1,6 +1,6 @@
 package com.acs.wave.provider.netty;
 
-import com.acs.wave.router.Router;
+import com.acs.wave.router.HTTPRouter;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
@@ -18,7 +18,7 @@ final class NettyServerChannel {
     private final String host;
     private final int port;
     private final SslContext sslContext;
-    private final Router router;
+    private final HTTPRouter httpRouter;
 
     private final AtomicBoolean started = new AtomicBoolean(false);
 
@@ -26,11 +26,11 @@ final class NettyServerChannel {
     private EventLoopGroup workerGroup;
     private Channel channel;
 
-    NettyServerChannel(String host, int port, SslContext sslContext, Router router) {
+    NettyServerChannel(String host, int port, SslContext sslContext, HTTPRouter httpRouter) {
         this.host = host;
         this.port = port;
         this.sslContext = sslContext;
-        this.router = router;
+        this.httpRouter = httpRouter;
     }
 
     void start() throws Exception {
@@ -42,7 +42,7 @@ final class NettyServerChannel {
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new NettyServerChannelInitializer(router, sslContext));
+                    .childHandler(new NettyServerChannelInitializer(httpRouter, sslContext));
 
             channel = b.bind(host, port).sync().channel();
         }

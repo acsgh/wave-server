@@ -1,21 +1,20 @@
 package com.acs.wave.provider.netty;
 
-import com.acs.wave.router.Router;
+import com.acs.wave.router.HTTPRouter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
-import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.ssl.SslContext;
 
 class NettyServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 
-    private final Router router;
+    private final HTTPRouter httpRouter;
     private final SslContext sslCtx;
 
-    NettyServerChannelInitializer(Router router, SslContext sslCtx) {
-        this.router = router;
+    NettyServerChannelInitializer(HTTPRouter httpRouter, SslContext sslCtx) {
+        this.httpRouter = httpRouter;
         this.sslCtx = sslCtx;
     }
 
@@ -31,6 +30,6 @@ class NettyServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 //        p.addLast(new WebSocketServerProtocolHandler("/websocket", null, true));
         p.addLast(new NettyWebSocketFrameHandler("/websocket", null, true));
 //        p.addLast(new WebSocketIndexPageHandler("/websocket"));
-        p.addLast(new NettyServerChannelHandler(router));
+        p.addLast(new NettyServerChannelHandler(httpRouter));
     }
 }

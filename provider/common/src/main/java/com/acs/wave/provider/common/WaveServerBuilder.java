@@ -1,6 +1,6 @@
 package com.acs.wave.provider.common;
 
-import com.acs.wave.router.Router;
+import com.acs.wave.router.HTTPRouter;
 import com.acs.wave.utils.CheckUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ public abstract class WaveServerBuilder<T extends WaveServer> {
     protected String host = DEFAULT_HOST;
     protected Integer httpPort = DEFAULT_HTTP_PORT;
     protected Integer httpsPort;
-    protected Router router;
+    protected HTTPRouter httpRouter;
 
     public WaveServerBuilder<T> host(String host) {
         this.host = host;
@@ -64,13 +64,13 @@ public abstract class WaveServerBuilder<T extends WaveServer> {
         return this;
     }
 
-    public WaveServerBuilder<T> router(Router router) {
-        this.router = router;
+    public WaveServerBuilder<T> httpRouter(HTTPRouter httpRouter) {
+        this.httpRouter = httpRouter;
         return this;
     }
 
     public T build() {
-        CheckUtils.checkNull("router", router);
+        CheckUtils.checkNull("httpRouter", httpRouter);
 
         if((httpPort == null) && (httpsPort == null)){
             throw new IllegalArgumentException("HTTP or HTTPS should be enable at least");

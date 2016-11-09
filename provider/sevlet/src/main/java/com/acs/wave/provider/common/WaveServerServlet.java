@@ -1,7 +1,7 @@
 package com.acs.wave.provider.common;
 
 import com.acs.wave.router.HTTPResponse;
-import com.acs.wave.router.Router;
+import com.acs.wave.router.HTTPRouter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,15 +15,15 @@ public class WaveServerServlet extends HttpServlet {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final Router router;
+    private final HTTPRouter httpRouter;
 
-    public WaveServerServlet(Router router) {
-        this.router = router;
+    public WaveServerServlet(HTTPRouter httpRouter) {
+        this.httpRouter = httpRouter;
     }
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HTTPResponse waveResponse = router.process(ServletUtils.toWaveRequest(request));
+        HTTPResponse waveResponse = httpRouter.process(ServletUtils.toWaveRequest(request));
         ServletUtils.transferParams(waveResponse, response);
     }
 

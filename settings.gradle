@@ -4,14 +4,17 @@ include ':router/http'
 include ':router/websocket'
 
 include ':converter/json'
+include ':converter/template/common'
+include ':converter/template/freemarker'
+include ':converter/template/thymeleaf'
 
 include ':provider/common'
 include ':provider/netty'
 include ':provider/jetty'
 include ':provider/sevlet'
 
-include ':examples/netty-json'
-include ':examples/jetty-json'
+include ':examples/netty'
+include ':examples/jetty'
 
 include ':utils'
 

@@ -21,17 +21,17 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class Router {
+public class HTTPRouter {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final List<Route<RequestFilter>> filters;
-    private final List<Route<RequestHandler>> handlers;
+    private final List<HTTPRoute<RequestFilter>> filters;
+    private final List<HTTPRoute<RequestHandler>> handlers;
     private final Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers;
     private final ErrorCodeHandler defaultErrorCodeHandler;
     private final ExceptionHandler exceptionHandler;
 
-    Router(List<Route<RequestFilter>> filters, List<Route<RequestHandler>> handlers, Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers, ErrorCodeHandler defaultErrorCodeHandler, ExceptionHandler exceptionHandler) {
+    HTTPRouter(List<HTTPRoute<RequestFilter>> filters, List<HTTPRoute<RequestHandler>> handlers, Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers, ErrorCodeHandler defaultErrorCodeHandler, ExceptionHandler exceptionHandler) {
         CheckUtils.checkNull("filters", filters);
         CheckUtils.checkNull("handlers", handlers);
         CheckUtils.checkNull("errorCodeHandlers", errorCodeHandlers);
@@ -70,23 +70,23 @@ public class Router {
     }
 
     private Optional<HTTPResponse> processFilters(HTTPRequest httpRequest, HTTPResponseBuilder responseBuilder) {
-        List<Route<RequestFilter>> routes = filters.stream()
-                .filter(route -> route.canApply(httpRequest))
+        List<HTTPRoute<RequestFilter>> httpRoutes = filters.stream()
+                .filter(httpRoute -> httpRoute.canApply(httpRequest))
                 .collect(Collectors.toList());
 
-        return getSupplier(httpRequest, responseBuilder, routes, 0).get();
+        return getSupplier(httpRequest, responseBuilder, httpRoutes, 0).get();
     }
 
-    private Supplier<Optional<HTTPResponse>> getSupplier(HTTPRequest httpRequest, HTTPResponseBuilder responseBuilder, List<Route<RequestFilter>> routes, int index) {
-        if (index < routes.size()) {
-            Route<RequestFilter> route = routes.get(index);
+    private Supplier<Optional<HTTPResponse>> getSupplier(HTTPRequest httpRequest, HTTPResponseBuilder responseBuilder, List<HTTPRoute<RequestFilter>> httpRoutes, int index) {
+        if (index < httpRoutes.size()) {
+            HTTPRoute<RequestFilter> httpRoute = httpRoutes.get(index);
             return () -> {
-                log.trace("Filter {} {}", route.methods, route.uri);
+                log.trace("Filter {} {}", httpRoute.methods, httpRoute.uri);
                 StopWatch stopWatch = new StopWatch().start();
                 try {
-                    return route.handler.handle(httpRequest.ofRoute(route), responseBuilder, getSupplier(httpRequest, responseBuilder, routes, index + 1));
+                    return httpRoute.handler.handle(httpRequest.ofRoute(httpRoute), responseBuilder, getSupplier(httpRequest, responseBuilder, httpRoutes, index + 1));
                 } finally {
-                    stopWatch.printElapseTime("Filter " + route.methods + " " + route.uri, log, LogLevel.TRACE);
+                    stopWatch.printElapseTime("Filter " + httpRoute.methods + " " + httpRoute.uri, log, LogLevel.TRACE);
                 }
             };
         } else {
@@ -96,22 +96,22 @@ public class Router {
 
 
     private Optional<HTTPResponse> processHandler(HTTPRequest httpRequest, HTTPResponseBuilder responseBuilder) {
-        Optional<Route<RequestHandler>> handleRoute = getRequestHandler(httpRequest);
+        Optional<HTTPRoute<RequestHandler>> handleRoute = getRequestHandler(httpRequest);
 
-        return handleRoute.flatMap(route -> {
-            log.trace("Handler {} {}", route.methods, route.uri);
+        return handleRoute.flatMap(httpRoute -> {
+            log.trace("Handler {} {}", httpRoute.methods, httpRoute.uri);
             StopWatch stopWatch = new StopWatch().start();
             try {
-                return route.handler.handle(httpRequest.ofRoute(route), responseBuilder);
+                return httpRoute.handler.handle(httpRequest.ofRoute(httpRoute), responseBuilder);
             } finally {
-                stopWatch.printElapseTime("Handler " + route.methods + " " + route.uri, log, LogLevel.TRACE);
+                stopWatch.printElapseTime("Handler " + httpRoute.methods + " " + httpRoute.uri, log, LogLevel.TRACE);
             }
         });
     }
 
-    private Optional<Route<RequestHandler>> getRequestHandler(HTTPRequest httpRequest) {
+    private Optional<HTTPRoute<RequestHandler>> getRequestHandler(HTTPRequest httpRequest) {
         return handlers.stream()
-                .filter(route -> route.canApply(httpRequest))
+                .filter(httpRoute -> httpRoute.canApply(httpRequest))
                 .map(Optional::of)
                 .reduce(Optional.empty(), (a, b) -> b);
     }

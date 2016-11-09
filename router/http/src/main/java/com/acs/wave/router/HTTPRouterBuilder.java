@@ -11,24 +11,24 @@ import com.acs.wave.utils.ExceptionUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class RouterBuilder {
+public class HTTPRouterBuilder {
 
-    protected final List<Route<RequestFilter>> filters = new ArrayList<>();
-    protected final List<Route<RequestHandler>> handlers = new ArrayList<>();
+    protected final List<HTTPRoute<RequestFilter>> filters = new ArrayList<>();
+    protected final List<HTTPRoute<RequestHandler>> handlers = new ArrayList<>();
     protected final Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers = new HashMap<>();
     protected ErrorCodeHandler defaultErrorCodeHandler;
     protected ExceptionHandler exceptionHandler;
 
-    public RouterBuilder() {
+    public HTTPRouterBuilder() {
         exceptionHandler(null);
         defaultErrorCodeHandler(null);
     }
 
-    public Router build() {
-        return new Router(filters, handlers, errorCodeHandlers, defaultErrorCodeHandler, exceptionHandler);
+    public HTTPRouter build() {
+        return new HTTPRouter(filters, handlers, errorCodeHandlers, defaultErrorCodeHandler, exceptionHandler);
     }
 
-    public RouterBuilder exceptionHandler(ExceptionHandler exceptionHandler) {
+    public HTTPRouterBuilder exceptionHandler(ExceptionHandler exceptionHandler) {
         if (exceptionHandler != null) {
             this.exceptionHandler = exceptionHandler;
         } else {
@@ -37,7 +37,7 @@ public class RouterBuilder {
         return this;
     }
 
-    public RouterBuilder defaultErrorCodeHandler(ErrorCodeHandler defaultErrorCodeHandler) {
+    public HTTPRouterBuilder defaultErrorCodeHandler(ErrorCodeHandler defaultErrorCodeHandler) {
         if (defaultErrorCodeHandler != null) {
             this.defaultErrorCodeHandler = defaultErrorCodeHandler;
         } else {
@@ -47,102 +47,102 @@ public class RouterBuilder {
     }
 
 
-    public RouterBuilder options(String url, RequestFilter filter) {
+    public HTTPRouterBuilder options(String url, RequestFilter filter) {
         return filter(url, filter, RequestMethod.OPTIONS);
     }
 
-    public RouterBuilder options(String url, RequestHandler handler) {
+    public HTTPRouterBuilder options(String url, RequestHandler handler) {
         return handler(url, handler, RequestMethod.OPTIONS);
     }
 
-    public RouterBuilder get(String url, RequestFilter filter) {
+    public HTTPRouterBuilder get(String url, RequestFilter filter) {
         return filter(url, filter, RequestMethod.GET);
     }
 
-    public RouterBuilder get(String url, RequestHandler handler) {
+    public HTTPRouterBuilder get(String url, RequestHandler handler) {
         return handler(url, handler, RequestMethod.GET);
     }
 
-    public RouterBuilder head(String url, RequestFilter filter) {
+    public HTTPRouterBuilder head(String url, RequestFilter filter) {
         return filter(url, filter, RequestMethod.HEAD);
     }
 
-    public RouterBuilder head(String url, RequestHandler handler) {
+    public HTTPRouterBuilder head(String url, RequestHandler handler) {
         return handler(url, handler, RequestMethod.HEAD);
     }
 
-    public RouterBuilder post(String url, RequestFilter filter) {
+    public HTTPRouterBuilder post(String url, RequestFilter filter) {
         return filter(url, filter, RequestMethod.POST);
     }
 
-    public RouterBuilder post(String url, RequestHandler handler) {
+    public HTTPRouterBuilder post(String url, RequestHandler handler) {
         return handler(url, handler, RequestMethod.POST);
     }
 
-    public RouterBuilder put(String url, RequestFilter filter) {
+    public HTTPRouterBuilder put(String url, RequestFilter filter) {
         return filter(url, filter, RequestMethod.PUT);
     }
 
-    public RouterBuilder put(String url, RequestHandler handler) {
+    public HTTPRouterBuilder put(String url, RequestHandler handler) {
         return handler(url, handler, RequestMethod.PUT);
     }
 
-    public RouterBuilder patch(String url, RequestFilter filter) {
+    public HTTPRouterBuilder patch(String url, RequestFilter filter) {
         return filter(url, filter, RequestMethod.PATCH);
     }
 
-    public RouterBuilder patch(String url, RequestHandler handler) {
+    public HTTPRouterBuilder patch(String url, RequestHandler handler) {
         return handler(url, handler, RequestMethod.PATCH);
     }
 
-    public RouterBuilder delete(String url, RequestFilter filter) {
+    public HTTPRouterBuilder delete(String url, RequestFilter filter) {
         return filter(url, filter, RequestMethod.DELETE);
     }
 
-    public RouterBuilder delete(String url, RequestHandler handler) {
+    public HTTPRouterBuilder delete(String url, RequestHandler handler) {
         return handler(url, handler, RequestMethod.DELETE);
     }
 
-    public RouterBuilder trace(String url, RequestFilter filter) {
+    public HTTPRouterBuilder trace(String url, RequestFilter filter) {
         return filter(url, filter, RequestMethod.TRACE);
     }
 
-    public RouterBuilder trace(String url, RequestHandler handler) {
+    public HTTPRouterBuilder trace(String url, RequestHandler handler) {
         return handler(url, handler, RequestMethod.TRACE);
     }
 
-    public RouterBuilder connect(String url, RequestFilter filter) {
+    public HTTPRouterBuilder connect(String url, RequestFilter filter) {
         return filter(url, filter, RequestMethod.CONNECT);
     }
 
-    public RouterBuilder connect(String url, RequestHandler handler) {
+    public HTTPRouterBuilder connect(String url, RequestHandler handler) {
         return handler(url, handler, RequestMethod.CONNECT);
     }
 
-    public RouterBuilder filter(String url, RequestFilter filter, RequestMethod... methods) {
-        Route<RequestFilter> route = new Route<>(url, toSet(methods), filter);
-        filters.add(route);
+    public HTTPRouterBuilder filter(String url, RequestFilter filter, RequestMethod... methods) {
+        HTTPRoute<RequestFilter> httpRoute = new HTTPRoute<>(url, toSet(methods), filter);
+        filters.add(httpRoute);
         return this;
     }
 
-    public RouterBuilder handler(String url, RequestHandler handler, RequestMethod... methods) {
-        Route<RequestHandler> route = new Route<>(url, toSet(methods), handler);
-        handlers.remove(route);
-        handlers.add(route);
+    public HTTPRouterBuilder handler(String url, RequestHandler handler, RequestMethod... methods) {
+        HTTPRoute<RequestHandler> httpRoute = new HTTPRoute<>(url, toSet(methods), handler);
+        handlers.remove(httpRoute);
+        handlers.add(httpRoute);
         return this;
     }
 
-    public RouterBuilder removeFilter(String url, RequestMethod method) {
-        List<Route<RequestFilter>> toRemove = filters.stream()
-                .filter(route -> route.uri.equalsIgnoreCase(url) && route.methods.contains(method))
+    public HTTPRouterBuilder removeFilter(String url, RequestMethod method) {
+        List<HTTPRoute<RequestFilter>> toRemove = filters.stream()
+                .filter(httpRoute -> httpRoute.uri.equalsIgnoreCase(url) && httpRoute.methods.contains(method))
                 .collect(Collectors.toList());
         filters.removeAll(toRemove);
         return this;
     }
 
-    public RouterBuilder removeHandler(String url, RequestMethod method) {
-        List<Route<RequestHandler>> toRemove = handlers.stream()
-                .filter(route -> route.uri.equalsIgnoreCase(url) && route.methods.contains(method))
+    public HTTPRouterBuilder removeHandler(String url, RequestMethod method) {
+        List<HTTPRoute<RequestHandler>> toRemove = handlers.stream()
+                .filter(httpRoute -> httpRoute.uri.equalsIgnoreCase(url) && httpRoute.methods.contains(method))
                 .collect(Collectors.toList());
         handlers.removeAll(toRemove);
         return this;

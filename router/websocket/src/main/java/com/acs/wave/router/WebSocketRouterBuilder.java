@@ -5,12 +5,12 @@ import com.acs.wave.router.websocket.WebSocketHandler;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WebSocketRouterBuilder extends RouterBuilder {
+public class WebSocketRouterBuilder {
 
     public final Map<String, WebSocketHandler> webSocketHandlers = new HashMap<>();
 
     public WebSocketRouter build() {
-        return new WebSocketRouter(filters, handlers, errorCodeHandlers, defaultErrorCodeHandler, exceptionHandler, webSocketHandlers);
+        return new WebSocketRouter(webSocketHandlers);
     }
 
     public WebSocketRouterBuilder webSocket(String url, WebSocketHandler handler) {

@@ -18,15 +18,15 @@ public class HTTPResponseBuilder {
     private byte[] body;
 
     private final HTTPRequest request;
-    private final Router router;
+    private final HTTPRouter httpRouter;
 
-    HTTPResponseBuilder(HTTPRequest request, Router router) {
-        this(request, router, new HTTPHeaders());
+    HTTPResponseBuilder(HTTPRequest request, HTTPRouter httpRouter) {
+        this(request, httpRouter, new HTTPHeaders());
     }
 
-    HTTPResponseBuilder(HTTPRequest request, Router router, HTTPHeaders headers) {
+    HTTPResponseBuilder(HTTPRequest request, HTTPRouter httpRouter, HTTPHeaders headers) {
         this.request = request;
-        this.router = router;
+        this.httpRouter = httpRouter;
         this.headers = headers;
 
         version(request.protocolVersion);
@@ -52,7 +52,7 @@ public class HTTPResponseBuilder {
     public HTTPResponse redirect(String url, RedirectStatus redirectStatus) {
         HTTPResponseBuilder responseBuilder = clone();
         responseBuilder.header("Location", url);
-        return router.getErrorResponse(request, responseBuilder, redirectStatus.status);
+        return httpRouter.getErrorResponse(request, responseBuilder, redirectStatus.status);
     }
 
     public Optional<HTTPResponse> redirectOption(String url, RedirectStatus status) {
@@ -60,7 +60,7 @@ public class HTTPResponseBuilder {
     }
 
     public HTTPResponse error(ResponseStatus errorCode) {
-        return router.getErrorResponse(request, this, errorCode);
+        return httpRouter.getErrorResponse(request, this, errorCode);
     }
 
     public Optional<HTTPResponse> errorOption(ResponseStatus errorCode) {
@@ -68,7 +68,7 @@ public class HTTPResponseBuilder {
     }
 
     public HTTPResponse serve(String url) {
-        return router.process(request.ofUri(url));
+        return httpRouter.process(request.ofUri(url));
     }
 
     public Optional<HTTPResponse> serveOption(String url) {
@@ -112,7 +112,7 @@ public class HTTPResponseBuilder {
     }
 
     public HTTPResponseBuilder clone() {
-        return new HTTPResponseBuilder(request, router, headers.clone());
+        return new HTTPResponseBuilder(request, httpRouter, headers.clone());
     }
 
     private byte[] stringToBytes(String string) {

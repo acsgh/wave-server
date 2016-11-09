@@ -6,8 +6,6 @@ import com.acs.wave.router.exception.UnexpectedContentTypeException;
 import com.acs.wave.router.functional.BodyReader;
 import com.acs.wave.utils.ExceptionUtils;
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.util.Set;
 
 public class HTTPRequest extends HTTPItem {
@@ -71,8 +69,8 @@ public class HTTPRequest extends HTTPItem {
         return new HTTPRequest(method, HTTPAddress.build(uri), protocolVersion, headers, remoteAddress, body);
     }
 
-    HTTPRequest ofRoute(Route<?> route) {
-        return new HTTPRequest(method, address.ofRoute(route.uri), protocolVersion, headers, remoteAddress, body);
+    HTTPRequest ofRoute(HTTPRoute<?> httpRoute) {
+        return new HTTPRequest(method, address.ofRoute(httpRoute.uri), protocolVersion, headers, remoteAddress, body);
     }
 
     @Override

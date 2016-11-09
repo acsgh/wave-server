@@ -1,6 +1,6 @@
 package com.acs.wave.provider.common;
 
-import com.acs.wave.router.Router;
+import com.acs.wave.router.HTTPRouter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,14 +12,14 @@ public abstract class WaveServerDefinition<SSLContext> {
     public final Integer httpPort;
     public final Integer httpsPort;
     public final SSLContext sslContext;
-    public final Router router;
+    public final HTTPRouter httpRouter;
 
-    public WaveServerDefinition(String host, Integer httpPort, Integer httpsPort, SSLContext sslContext, Router router) {
+    public WaveServerDefinition(String host, Integer httpPort, Integer httpsPort, SSLContext sslContext, HTTPRouter httpRouter) {
         this.host = host;
         this.httpPort = httpPort;
         this.httpsPort = httpsPort;
         this.sslContext = sslContext;
-        this.router = router;
+        this.httpRouter = httpRouter;
     }
 
     public boolean hasHTTP() {

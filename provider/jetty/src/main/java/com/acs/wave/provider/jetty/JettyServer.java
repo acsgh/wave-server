@@ -29,7 +29,7 @@ public final class JettyServer extends WaveServer<JettyServerDefinition> {
     @Override
     protected void startServer() throws Exception {
         server = createServer();
-        WaveServerServlet servlet = new WaveServerServlet(definition.router);
+        WaveServerServlet servlet = new WaveServerServlet(definition.httpRouter);
         server.setHandler(new JettyHandler(servlet));
         if (definition.hasHTTP()) {
             server.addConnector(getServerConnector());

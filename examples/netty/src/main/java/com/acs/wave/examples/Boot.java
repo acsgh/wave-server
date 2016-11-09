@@ -5,8 +5,8 @@ import com.acs.wave.converter.json.JsonBodyWriter;
 import com.acs.wave.converter.json.json.ObjectMapperProvider;
 import com.acs.wave.provider.netty.NettyServer;
 import com.acs.wave.provider.netty.NettyServerBuilder;
-import com.acs.wave.router.Router;
-import com.acs.wave.router.RouterBuilder;
+import com.acs.wave.router.HTTPRouter;
+import com.acs.wave.router.HTTPRouterBuilder;
 import com.acs.wave.router.constants.ResponseStatus;
 import com.acs.wave.router.files.StaticClasspathFolderFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,10 +20,10 @@ import java.util.concurrent.atomic.AtomicLong;
 public final class Boot {
 
     public static void main(String[] args) throws Exception {
-        Router router = getRouter();
+        HTTPRouter httpRouter = getRouter();
 
         NettyServer nettyServer = new NettyServerBuilder()
-                .router(router)
+                .httpRouter(httpRouter)
                 .build();
 
         nettyServer.start();
@@ -31,7 +31,7 @@ public final class Boot {
 
     }
 
-    private static Router getRouter() throws FileNotFoundException {
+    private static HTTPRouter getRouter() throws FileNotFoundException {
         Map<Long, Person> persons = new HashMap<>();
         AtomicLong ids = new AtomicLong(0);
 
@@ -40,7 +40,7 @@ public final class Boot {
             persons.put(id, new Person(id, "John Doe " + id, (int) (2 * id)));
         }
 
-        RouterBuilder builder = new RouterBuilder();
+        HTTPRouterBuilder builder = new HTTPRouterBuilder();
         ObjectMapper objectMapper = new ObjectMapperProvider(true).getObjectMapper();
         JsonBodyWriter jsonBodyWriter = new JsonBodyWriter(objectMapper);
         JsonBodyReader<Person> jsonBodyReader = new JsonBodyReader<>(objectMapper, Person.class);

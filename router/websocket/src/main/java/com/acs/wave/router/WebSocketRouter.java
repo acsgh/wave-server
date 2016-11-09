@@ -13,14 +13,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class WebSocketRouter extends Router{
+public class WebSocketRouter {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     public final Map<String, WebSocketHandler> webSocketHandlers;
 
-    public WebSocketRouter(List<Route<RequestFilter>> filters, List<Route<RequestHandler>> handlers, Map<ResponseStatus, ErrorCodeHandler> errorCodeHandlers, ErrorCodeHandler defaultErrorCodeHandler, ExceptionHandler exceptionHandler, Map<String, WebSocketHandler> webSocketHandlers) {
-        super(filters, handlers, errorCodeHandlers, defaultErrorCodeHandler, exceptionHandler);
+    WebSocketRouter(Map<String, WebSocketHandler> webSocketHandlers) {
         CheckUtils.checkNull("webSocketHandlers", webSocketHandlers);
         this.webSocketHandlers = Collections.unmodifiableMap(webSocketHandlers);
     }

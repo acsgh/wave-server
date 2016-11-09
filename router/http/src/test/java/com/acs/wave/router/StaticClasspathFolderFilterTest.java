@@ -11,7 +11,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.net.InetAddress;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Optional;
@@ -37,7 +36,7 @@ public class StaticClasspathFolderFilterTest {
     private HTTPParams queryParams;
 
     @Mock
-    private Router router;
+    private HTTPRouter httpRouter;
 
     @Mock
     private Supplier<Optional<HTTPResponse>> next;
@@ -52,7 +51,7 @@ public class StaticClasspathFolderFilterTest {
     @Test
     public void no_web_jars_found() {
         HTTPRequest request = getRequest(RequestMethod.GET, "/webjars/not-found.txt", ProtocolVersion.HTTP_1_1);
-        HTTPResponseBuilder responseBuilder = new HTTPResponseBuilder(request, router);
+        HTTPResponseBuilder responseBuilder = new HTTPResponseBuilder(request, httpRouter);
         webJarsHandler.handle(request, responseBuilder, next);
         verify(next).get();
     }
@@ -62,7 +61,7 @@ public class StaticClasspathFolderFilterTest {
         String secret = "Hello World!";
 
         HTTPRequest request = getRequest(RequestMethod.GET, "/found.txt", ProtocolVersion.HTTP_1_1);
-        HTTPResponseBuilder responseBuilder = new HTTPResponseBuilder(request, router);
+        HTTPResponseBuilder responseBuilder = new HTTPResponseBuilder(request, httpRouter);
 
         when(pathParams.get("path", String.class)).thenReturn(Optional.of("found.txt"));
         when(classLoader.getResource("META-INF/resources/webjars/found.txt")).thenReturn(new URL("http://dummy.com"));

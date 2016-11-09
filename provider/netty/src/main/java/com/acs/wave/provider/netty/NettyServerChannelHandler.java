@@ -3,7 +3,7 @@ package com.acs.wave.provider.netty;
 import com.acs.wave.router.HTTPHeaders;
 import com.acs.wave.router.HTTPRequest;
 import com.acs.wave.router.HTTPResponse;
-import com.acs.wave.router.Router;
+import com.acs.wave.router.HTTPRouter;
 import com.acs.wave.router.constants.ProtocolVersion;
 import com.acs.wave.router.constants.RequestMethod;
 import io.netty.buffer.ByteBuf;
@@ -16,7 +16,6 @@ import io.netty.handler.codec.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
@@ -29,10 +28,10 @@ class NettyServerChannelHandler extends ChannelInboundHandlerAdapter {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final Router router;
+    private final HTTPRouter httpRouter;
 
-    NettyServerChannelHandler(Router router) {
-        this.router = router;
+    NettyServerChannelHandler(HTTPRouter httpRouter) {
+        this.httpRouter = httpRouter;
     }
 
     @Override
@@ -51,7 +50,7 @@ class NettyServerChannelHandler extends ChannelInboundHandlerAdapter {
             boolean keepAlive = HttpUtil.isKeepAlive(req);
 
             HTTPRequest waveRequest = getWaveRequest(req, ctx.channel().remoteAddress());
-            HTTPResponse wareResponse = router.process(waveRequest);
+            HTTPResponse wareResponse = httpRouter.process(waveRequest);
             HttpResponse response = getNettyResponse(wareResponse);
 
             if (!keepAlive) {

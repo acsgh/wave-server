@@ -5,12 +5,12 @@ import com.acs.wave.utils.CheckUtils;
 
 import java.util.Set;
 
-class Route<T> {
+class HTTPRoute<T> {
     final String uri;
     final Set<RequestMethod> methods;
     final T handler;
 
-    Route(String uri, Set<RequestMethod> methods, T handler) {
+    HTTPRoute(String uri, Set<RequestMethod> methods, T handler) {
         CheckUtils.checkString("uri", uri);
         CheckUtils.checkNull("method", methods);
         CheckUtils.checkNull("handler", handler);
@@ -25,10 +25,10 @@ class Route<T> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Route<?> route = (Route<?>) o;
+        HTTPRoute<?> httpRoute = (HTTPRoute<?>) o;
 
-        if (!uri.equals(route.uri)) return false;
-        return methods.equals(route.methods);
+        if (!uri.equals(httpRoute.uri)) return false;
+        return methods.equals(httpRoute.methods);
 
     }
 
