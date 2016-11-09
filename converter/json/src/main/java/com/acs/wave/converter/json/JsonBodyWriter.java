@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
 
-public class JsonBodyWriter implements BodyWriter {
+public class JsonBodyWriter<T> implements BodyWriter<T> {
 
     private final ObjectMapper objectMapper;
 
@@ -20,7 +20,7 @@ public class JsonBodyWriter implements BodyWriter {
     }
 
     @Override
-    public <T> byte[] write(T body) {
+    public byte[] write(T body) {
         byte[] result = null;
 
         if (body != null) {

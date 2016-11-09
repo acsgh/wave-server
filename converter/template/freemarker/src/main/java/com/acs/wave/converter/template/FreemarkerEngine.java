@@ -1,5 +1,6 @@
 package com.acs.wave.converter.template;
 
+import com.acs.wave.router.functional.BodyWriter;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -7,7 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 
 
-public class FreemarkerEngine {
+public class FreemarkerEngine implements BodyWriter<TemplateModel> {
 
     public final Configuration configuration;
 
@@ -15,6 +16,7 @@ public class FreemarkerEngine {
         this.configuration = configuration;
     }
 
+    @Override
     public byte[] write(TemplateModel body) {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream();
              PrintWriter printStream = new PrintWriter(out)) {

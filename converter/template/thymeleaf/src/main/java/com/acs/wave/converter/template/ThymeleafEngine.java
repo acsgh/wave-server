@@ -1,5 +1,6 @@
 package com.acs.wave.converter.template;
 
+import com.acs.wave.router.functional.BodyWriter;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -7,7 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 
 
-public class ThymeleafEngine {
+public class ThymeleafEngine implements BodyWriter<TemplateModel> {
 
     public final TemplateEngine templateEngine;
 
@@ -15,6 +16,7 @@ public class ThymeleafEngine {
         this.templateEngine = templateEngine;
     }
 
+    @Override
     public byte[] write(TemplateModel body) {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream();
              PrintWriter printStream = new PrintWriter(out)) {

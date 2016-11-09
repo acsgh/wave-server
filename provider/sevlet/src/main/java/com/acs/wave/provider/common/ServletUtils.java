@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public final class ServletUtils {
-    private  ServletUtils() {
+    private ServletUtils() {
     }
 
 
@@ -29,12 +29,22 @@ public final class ServletUtils {
     public static HTTPRequest toWaveRequest(HttpServletRequest request) {
         return new HTTPRequest(
                 getMethod(request.getMethod()),
-                request.getRequestURI(),
+                getUri(request),
                 getProtocol(request.getProtocol()),
                 getHeaders(request),
                 request.getRemoteAddr(),
                 getBody(request)
         );
+    }
+
+    private static String getUri(HttpServletRequest request) {
+        String result = request.getRequestURI();
+
+        if (request.getQueryString() != null) {
+            result += "?" + request.getQueryString();
+        }
+
+        return result;
     }
 
     private static byte[] getBody(HttpServletRequest request) {
@@ -47,7 +57,7 @@ public final class ServletUtils {
         forAll(request.getHeaderNames(), name -> {
             String value = request.getHeader(name);
 
-            if(value != null){
+            if (value != null) {
                 headers.add(new HTTPHeader(name, value));
             }
         });
@@ -55,8 +65,8 @@ public final class ServletUtils {
         return new HTTPHeaders(headers);
     }
 
-    private static <T> void forAll(Enumeration<T> values, Consumer<T> action){
-        while(values.hasMoreElements()){
+    private static <T> void forAll(Enumeration<T> values, Consumer<T> action) {
+        while (values.hasMoreElements()) {
             action.accept(values.nextElement());
         }
     }

@@ -101,7 +101,7 @@ public class HTTPResponseBuilder {
     }
 
 
-    public <T> HTTPResponseBuilder body(T body, BodyWriter converter) {
+    public <T> HTTPResponseBuilder body(T body, BodyWriter<T> converter) {
         this.body = converter.write(body);
 
         if (!headers.containsKey("Content-Type")) {

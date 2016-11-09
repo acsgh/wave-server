@@ -3,6 +3,9 @@ package com.acs.wave.examples.jetty;
 import com.acs.wave.converter.json.JsonBodyReader;
 import com.acs.wave.converter.json.JsonBodyWriter;
 import com.acs.wave.converter.json.json.ObjectMapperProvider;
+import com.acs.wave.converter.template.TemplateModel;
+import com.acs.wave.converter.template.ThymeleafEngine;
+import com.acs.wave.converter.template.ThymeleafEngineBuilder;
 import com.acs.wave.provider.jetty.JettyServer;
 import com.acs.wave.provider.jetty.JettyServerBuilder;
 import com.acs.wave.router.HTTPRouter;
@@ -32,6 +35,10 @@ public final class JettyBoot {
     }
 
     private static HTTPRouter getRouter() throws FileNotFoundException {
+        ThymeleafEngine templateEngine = new ThymeleafEngineBuilder()
+                .prefix("/templates/")
+                .build();
+
         Map<Long, Person> persons = new HashMap<>();
         AtomicLong ids = new AtomicLong(0);
 
@@ -44,6 +51,13 @@ public final class JettyBoot {
         ObjectMapper objectMapper = new ObjectMapperProvider(true).getObjectMapper();
         JsonBodyWriter jsonBodyWriter = new JsonBodyWriter(objectMapper);
         JsonBodyReader<Person> jsonBodyReader = new JsonBodyReader<>(objectMapper, Person.class);
+
+        builder.get("/", (request, responseBuilder) -> {
+            TemplateModel templateModel = new TemplateModel("index");
+            templateModel.put("name", request.queryParams().getOrDefault("name", String.class, "Jonh Doe"));
+            responseBuilder.body(templateModel, templateEngine);
+            return responseBuilder.buildOption();
+        });
 
         builder.get("/persons", (request, responseBuilder) -> {
             responseBuilder.body(persons.values(), jsonBodyWriter);
@@ -98,7 +112,6 @@ public final class JettyBoot {
 
         builder.filter("/*", new StaticClasspathFolderFilter("public", true));
         builder.filter("/webjars/{path+}", new StaticClasspathFolderFilter("META-INF/resources/webjars", true));
-        builder.handler("/", (request, responseBuilder) -> responseBuilder.serveOption("/index.html"));
         return builder.build();
     }
 }

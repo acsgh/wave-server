@@ -1,6 +1,6 @@
 dependencies {
-    compile project(":wave-server-router-http")
     compile project(":wave-server-converter-json")
+    compile project(":wave-server-converter-template-thymeleaf")
     compile project(":wave-server-provider-jetty")
 
     compile group: 'org.projectlombok', name: 'lombok', version: '1.16.10'
