@@ -32,6 +32,7 @@ public final class ServletUtils {
                 request.getRequestURI(),
                 getProtocol(request.getProtocol()),
                 getHeaders(request),
+                request.getRemoteAddr(),
                 getBody(request)
         );
     }

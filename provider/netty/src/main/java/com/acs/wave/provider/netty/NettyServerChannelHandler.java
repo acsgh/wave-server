@@ -16,6 +16,10 @@ import io.netty.handler.codec.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+
 import static io.netty.handler.codec.http.HttpHeaderNames.CONNECTION;
 import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_LENGTH;
 import static io.netty.handler.codec.http.HttpResponseStatus.CONTINUE;
@@ -46,7 +50,7 @@ class NettyServerChannelHandler extends ChannelInboundHandlerAdapter {
             }
             boolean keepAlive = HttpUtil.isKeepAlive(req);
 
-            HTTPRequest waveRequest = getWaveRequest(req);
+            HTTPRequest waveRequest = getWaveRequest(req, ctx.channel().remoteAddress());
             HTTPResponse wareResponse = router.process(waveRequest);
             HttpResponse response = getNettyResponse(wareResponse);
 
@@ -73,12 +77,13 @@ class NettyServerChannelHandler extends ChannelInboundHandlerAdapter {
     }
 
 
-    private HTTPRequest getWaveRequest(HttpRequest request) {
+    private HTTPRequest getWaveRequest(HttpRequest request, SocketAddress socketAddress) {
         return new HTTPRequest(
                 getWaveRequestMethod(request.method()),
                 request.uri(),
                 getWaveHTTPVersion(request.protocolVersion()),
                 getHeaders(request),
+                ((InetSocketAddress) socketAddress).getHostName(),
                 getBody(request)
         );
     }

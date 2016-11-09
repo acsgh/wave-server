@@ -1,9 +1,10 @@
 package com.acs.wave.router.websocket;
 
-import java.util.Optional;
+import com.acs.wave.router.websocket.request.WebSocketRequest;
+import com.acs.wave.router.websocket.response.WebSocketResponse;
+import com.acs.wave.router.websocket.response.WebSocketResponseBuilder;
 
-@FunctionalInterface
 public interface WebSocketHandler {
 
-    Optional<WebSocketResponse> process(WebSocketRequest request, WebSocketHandlerBuilder responseBuilder);
+    WebSocketResponse process(WebSocketRequest request, WebSocketResponseBuilder responseBuilder);
 }

@@ -11,6 +11,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Optional;
@@ -80,6 +81,6 @@ public class StaticClasspathFolderFilterTest {
 
 
     private HTTPRequest getRequest(RequestMethod method, String uri, ProtocolVersion version) {
-        return new HTTPRequest(method, uri, version, new HTTPHeaders(), new byte[0]);
+        return new HTTPRequest(method, uri, version, new HTTPHeaders(), "localhost", new byte[0]);
     }
 }
