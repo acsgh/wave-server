@@ -32,10 +32,11 @@ class NettyServerChannelInitializer extends ChannelInitializer<SocketChannel> {
         p.addLast(new HttpServerCodec());
         p.addLast(new HttpObjectAggregator(64 * 1024 * 1024));
 
-        if (webSocketRouter != null)
+        if (webSocketRouter != null) {
             for (WebSocketRoute route : webSocketRouter.routes()) {
                 p.addLast(new NettyWebSocketFrameHandler(webSocketRouter, route.uri, route.subprotocol));
             }
+        }
 
         p.addLast(new NettyServerChannelHandler(httpRouter));
     }

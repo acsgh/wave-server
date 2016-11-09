@@ -36,6 +36,15 @@ public final class NettyBoot {
     private static WebSocketRouter getWebSocketRouter() {
         WebSocketRouterBuilder webSocketRouterBuilder = new WebSocketRouterBuilder();
 
+
+//        webSocketRouterBuilder.webSocket("/revert", (request, responseBuilder) -> {
+//            if (request instanceof WebSocketRequestText) {
+//                return responseBuilder.text(revert(((WebSocketRequestText) request).text)).build();
+//            } else {
+//                return responseBuilder.build();
+//            }
+//        });
+
         webSocketRouterBuilder.webSocket("/echo", (request, responseBuilder) -> {
             if (request instanceof WebSocketRequestText) {
                 return responseBuilder.text(((WebSocketRequestText) request).text).build();
@@ -44,26 +53,18 @@ public final class NettyBoot {
             }
         });
 
-        webSocketRouterBuilder.webSocket("/revert", (request, responseBuilder) -> {
-            if (request instanceof WebSocketRequestText) {
-                return responseBuilder.text(revert(((WebSocketRequestText) request).text)).build();
-            } else {
-                return responseBuilder.build();
-            }
-        });
-
         return webSocketRouterBuilder.build();
     }
 
-    private static String revert(String text) {
-        String result = "";
-
-        for (int i = 0; i < text.length(); i++) {
-            result += text.charAt(text.length() - i - 1);
-        }
-
-        return result;
-    }
+//    private static String revert(String text) {
+//        String result = "";
+//
+//        for (int i = 0; i < text.length(); i++) {
+//            result += text.charAt(text.length() - i - 1);
+//        }
+//
+//        return result;
+//    }
 
     private static HTTPRouter getHttpRouter() throws FileNotFoundException {
         Map<Long, Person> persons = new HashMap<>();

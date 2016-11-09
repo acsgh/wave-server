@@ -1,9 +1,6 @@
 package com.acs.wave.provider.netty;
 
-import com.acs.wave.router.HTTPHeaders;
-import com.acs.wave.router.HTTPRequest;
-import com.acs.wave.router.HTTPResponse;
-import com.acs.wave.router.HTTPRouter;
+import com.acs.wave.router.*;
 import com.acs.wave.router.constants.ProtocolVersion;
 import com.acs.wave.router.constants.RequestMethod;
 import io.netty.buffer.ByteBuf;
