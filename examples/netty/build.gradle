@@ -2,7 +2,8 @@ dependencies {
     compile project(":wave-server-converter-json")
     compile project(":wave-server-provider-netty")
 
-    compile group: 'org.projectlombok', name: 'lombok', version: '1.16.10'
+    compileOnly 'org.projectlombok:lombok:1.18.8'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
 
     compile group: 'org.webjars', name: 'bootstrap', version: '3.3.7-1'
 
