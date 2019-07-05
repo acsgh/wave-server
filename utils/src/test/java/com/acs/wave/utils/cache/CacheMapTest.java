@@ -1,18 +1,18 @@
 package com.acs.wave.utils.cache;
 
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-@RunWith(PowerMockRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CacheMapTest {
 
     @Mock
@@ -22,7 +22,7 @@ public class CacheMapTest {
     private Supplier<Long> timeProvider;
 
     @Test
-    public void normal_mapping(){
+    public void normal_mapping() {
         CacheMap<String, String> cache = new CacheMapBuilder<String, String>().build();
         String expected = "World!";
         cache.put("Hello", expected);
@@ -31,14 +31,14 @@ public class CacheMapTest {
     }
 
     @Test
-    public void no_entry_null(){
+    public void no_entry_null() {
         CacheMap<String, String> cache = new CacheMapBuilder<String, String>().build();
         String result = cache.get("Hello");
         assertEquals(null, result);
     }
 
     @Test
-    public void no_entry_but_provider(){
+    public void no_entry_but_provider() {
         String key = "Hello";
         String expected = "World!";
         when(provider.get(key)).thenReturn(expected);
@@ -48,7 +48,7 @@ public class CacheMapTest {
     }
 
     @Test
-    public void no_timeout_pass(){
+    public void no_timeout_pass() {
         when(timeProvider.get()).thenReturn(1L, 2L);
         String key = "Hello";
         String expected = "World!";
@@ -59,7 +59,7 @@ public class CacheMapTest {
     }
 
     @Test
-    public void timeout_pass(){
+    public void timeout_pass() {
         when(timeProvider.get()).thenReturn(1L, 1000L);
         String key = "Hello";
         String expected = "World!";

@@ -3,11 +3,13 @@ package com.acs.wave.router;
 import com.acs.wave.router.constants.ProtocolVersion;
 import com.acs.wave.router.constants.RequestMethod;
 import com.acs.wave.router.files.StaticClasspathFolderFilter;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -16,11 +18,12 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class StaticClasspathFolderFilterTest {
 
     @Mock
@@ -43,7 +46,7 @@ public class StaticClasspathFolderFilterTest {
 
     private StaticClasspathFolderFilter webJarsHandler;
 
-    @Before
+    @BeforeEach
     public void init() {
         webJarsHandler = new StaticClasspathFolderFilter("META-INF/resources/webjars", false, classLoader);
     }
@@ -66,7 +69,7 @@ public class StaticClasspathFolderFilterTest {
         when(pathParams.get("path", String.class)).thenReturn(Optional.of("found.txt"));
         when(classLoader.getResource("META-INF/resources/webjars/found.txt")).thenReturn(new URL("http://dummy.com"));
         when(classLoader.getResourceAsStream("META-INF/resources/webjars/found.txt")).thenReturn(getInputStream(secret), getInputStream(secret));
-        Optional<HTTPResponse> response =  webJarsHandler.handle(request, responseBuilder, next);
+        Optional<HTTPResponse> response = webJarsHandler.handle(request, responseBuilder, next);
         verify(next, times(0)).get();
         assertTrue(response.isPresent());
         System.out.println(Arrays.toString(secret.getBytes()));

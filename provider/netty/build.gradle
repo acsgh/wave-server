@@ -9,6 +9,4 @@ dependencies {
     compile group: 'io.netty', name: 'netty-all', version: '4.1.6.Final'
 
     testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.7'
-    testCompile group: 'org.powermock', name: 'powermock-module-junit4', version: '1.6.5'
-    testCompile group: 'org.powermock', name: 'powermock-api-mockito', version: '1.6.5'
 }
