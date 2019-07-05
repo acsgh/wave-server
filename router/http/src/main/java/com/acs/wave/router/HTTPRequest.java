@@ -6,6 +6,7 @@ import com.acs.wave.router.exception.UnexpectedContentTypeException;
 import com.acs.wave.router.functional.BodyReader;
 import com.acs.wave.utils.ExceptionUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
 public class HTTPRequest extends HTTPItem {
@@ -88,7 +89,7 @@ public class HTTPRequest extends HTTPItem {
     private String bytesToString(byte[] bytes) {
         String result = null;
         try {
-            result = new String(bytes, "UTF-8");
+            result = new String(bytes, StandardCharsets.UTF_8);
         } catch (Exception e) {
             ExceptionUtils.throwRuntimeException(e);
         }
